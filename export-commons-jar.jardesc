@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="MedievalWipeoutClient/libs/medievalwipeout-commons.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/MedievalWipeoutClient/export-commons-jar.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <folder path="/Medieval Wipeout Libs/bin"/>
+        <file path="/Medieval Wipeout Libs/.classpath"/>
+        <folder path="/Medieval Wipeout Libs/target"/>
+        <file path="/Medieval Wipeout Libs/.project"/>
+        <folder path="/Medieval Wipeout Libs/.settings"/>
+        <javaElement handleIdentifier="=Medieval Wipeout Libs/src"/>
+    </selectedElements>
+</jardesc>

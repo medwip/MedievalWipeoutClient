@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/cardLayoutImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/not_initialized"
+            android:paddingRight="5dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/card_goblin_pirate_large"
+            android:background="@drawable/image_border" />
+
+        <ImageView
+            android:id="@+id/cardDefensorImage"
+            android:adjustViewBounds="true"
+            style="@style/Skill"
+            android:layout_width="@dimen/smallIconWidth"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:src="@drawable/defense"
+            android:contentDescription="@string/not_initialized" />
+
+        <ImageView
+            android:id="@+id/cardArcheryImage"
+            android:adjustViewBounds="true"
+            android:layout_width="@dimen/smallIconWidth"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:contentDescription="@string/not_initialized"
+            android:src="@drawable/archery" />
+
+        <TextView
+            android:id="@+id/cardAttackText"
+            style="@style/Skill"
+            android:layout_width="@dimen/smallIconWidth"
+            android:layout_height="@dimen/smallIconWidth"
+            android:layout_gravity="bottom|left"
+            android:drawableLeft="@drawable/attack"
+            android:text="@string/not_initialized" />
+        
+        <TextView
+            android:id="@+id/cardLifePointsText"
+            style="@style/Skill"
+            android:layout_width="@dimen/smallIconWidth"
+            android:layout_height="@dimen/smallIconWidth"
+            android:layout_gravity="bottom|right"
+            android:background="@drawable/life"
+            android:text="@string/not_initialized" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/cardName"
+        style="@style/Skill"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="@string/not_initialized" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/cardGold"
+            style="@style/Skill"
+            android:layout_width="@dimen/smallIconWidth"
+            android:layout_height="@dimen/smallIconWidth"
+            android:layout_gravity="left"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/gold"
+            android:text="@string/not_initialized"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/cardFaith"
+            style="@style/Skill"
+            android:layout_width="@dimen/smallIconWidth"
+            android:layout_height="@dimen/smallIconWidth"
+            android:layout_gravity="right|end"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/faith"
+            android:text="@string/not_initialized"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <com.guntzergames.medievalwipeout.layouts.ElementLayout
+        android:id="@+id/numberOfCardsLayout"
+        style="@style/CardStyle.LifePoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
+</LinearLayout>

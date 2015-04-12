@@ -1,0 +1,20 @@
+<project
+    name="ClientPackage"
+    basedir="."
+    default="copy" >
+
+    <target name="copy" >
+
+        <copy
+            file="bin/MedievalWipeoutClient.apk"
+            todir="C:/dev/wildfly-8.1.0.Final/bin/client" />
+        <!-- todir="../MedievalWipeoutServer/MedievalWipeoutServerWeb/src/main/resources/META-INF/client" /> -->
+
+        <copy
+            file="assets/version"
+            todir="C:/dev/wildfly-8.1.0.Final/bin/client" />
+        <!-- todir="../MedievalWipeoutServer/MedievalWipeoutServerWeb/src/main/resources/META-INF/client" /> -->
+
+    </target>
+
+</project>
