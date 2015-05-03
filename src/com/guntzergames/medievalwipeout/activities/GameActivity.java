@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import android.app.Dialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -24,7 +23,6 @@ import android.view.View.DragShadowBuilder;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -46,6 +44,7 @@ import com.guntzergames.medievalwipeout.beans.GameEvent.PlayerType;
 import com.guntzergames.medievalwipeout.beans.GameEventDeckCard;
 import com.guntzergames.medievalwipeout.beans.GameEventPlayCard;
 import com.guntzergames.medievalwipeout.beans.GameEventPlayCard.EventType;
+import com.guntzergames.medievalwipeout.beans.GameEventIncreaseDecrease;
 import com.guntzergames.medievalwipeout.beans.GameEventResourceCard;
 import com.guntzergames.medievalwipeout.beans.Player;
 import com.guntzergames.medievalwipeout.beans.PlayerDeckCard;
@@ -89,8 +88,8 @@ public class GameActivity extends ApplicationActivity {
 
 	private GameAnimationListener gameAnimationListener;
 	private HighlightAnimationListener highlightAnimationListener;
-	private AnimationSet cardEventAnimationSet, highlightAnimationSet;
-	private TranslateAnimation cardEventTranslationAnimation, highlightTranslationAnimation;
+	private AnimationSet cardEventAnimationSet, increaseDecreaseAnimationSet, highlightAnimationSet;
+	private TranslateAnimation cardEventTranslationAnimation, increaseDecreaseTranslateAnimation, highlightTranslationAnimation;
 	private AlphaAnimation highlightAlphaAnimation;
 
 	private LinearLayout playerHandLayout, opponentFieldDefenseLayout, opponentFieldAttackLayout, playerFieldDefenseLayout, playerFieldAttackLayout, highlightLayout;
@@ -100,7 +99,7 @@ public class GameActivity extends ApplicationActivity {
 
 	private HorizontalScrollView handScrollView;
 
-	private TextView gameInfos, gameTrade, gameDefense, gameFaith;
+	private TextView gameInfos, gameTrade, gameDefense, gameFaith, increaseDecreaseText;
 
 	private Set<View> dragableRegisteredViews = new HashSet<View>();
 
@@ -265,15 +264,10 @@ public class GameActivity extends ApplicationActivity {
 
 	private void initOpponentDragListener() {
 
-		if (opponentDefenseDown) {
-			unregisterDragListener(opponentFieldDefenseLayout);
-		} else {
-			registerDragListener(opponentFieldDefenseLayout);
-		}
+		int numberofAttackOpponents = opponent.getPlayerFieldAttack().getCards().size();
+		int numberofDefenseOpponents = opponent.getPlayerFieldDefense().getCards().size();
 
-		int len = opponent.getPlayerFieldAttack().getCards().size();
-
-		for (int i = 0; i < Math.min(opponentFieldAttackLayout.getChildCount(), len); i++) {
+		for (int i = 0; i < Math.min(opponentFieldAttackLayout.getChildCount(), numberofAttackOpponents); i++) {
 
 			CardLayout cardInFieldLayout = (CardLayout) opponentFieldAttackLayout.getChildAt(i);
 			registerDragListener(cardInFieldLayout);
@@ -281,14 +275,19 @@ public class GameActivity extends ApplicationActivity {
 		}
 
 		if (opponentDefenseDown) {
-			len = opponent.getPlayerFieldDefense().getCards().size();
 
-			for (int i = 0; i < Math.min(opponentFieldDefenseLayout.getChildCount(), len); i++) {
+			for (int i = 0; i < Math.min(opponentFieldDefenseLayout.getChildCount(), numberofDefenseOpponents); i++) {
 
 				CardLayout cardInFieldLayout = (CardLayout) opponentFieldDefenseLayout.getChildAt(i);
 				registerDragListener(cardInFieldLayout);
 
 			}
+		}
+
+		if (opponentDefenseDown && numberofDefenseOpponents > 0) {
+			unregisterDragListener(opponentFieldDefenseLayout);
+		} else {
+			registerDragListener(opponentFieldDefenseLayout);
 		}
 
 	}
@@ -466,10 +465,10 @@ public class GameActivity extends ApplicationActivity {
 
 		switch (phase) {
 			case DURING_RESOURCE_CHOOSE:
-				displayPlayerChoices(gameView.getResourceCard1(), gameView.getResourceCard2());
+				displayPlayerChoices(gameView.getResourceCard1(), gameView.getResourceCard2(), false);
 				break;
 			case DURING_DECK_DRAW:
-				displayPlayerChoices(player.getPlayerDeckCard1(), player.getPlayerDeckCard2());
+				displayPlayerChoices(player.getPlayerDeckCard1(), player.getPlayerDeckCard2(), !gameView.isActivePlayer());
 				break;
 			case DURING_RESOURCE_SELECT:
 				startHighlightAnimation(gameResourcesLayout);
@@ -486,10 +485,10 @@ public class GameActivity extends ApplicationActivity {
 
 	}
 
-	private void displayPlayerChoices(ICard cardLayout1, ICard cardLayout2) {
+	private void displayPlayerChoices(ICard cardLayout1, ICard cardLayout2, boolean showBack) {
 
-		playerChoiceCard1Layout.setup(this, cardLayout1, 1, CardLocation.MODAL);
-		playerChoiceCard2Layout.setup(this, cardLayout2, 2, CardLocation.MODAL);
+		playerChoiceCard1Layout.setup(this, cardLayout1, 1, showBack ? CardLocation.BACK : CardLocation.MODAL);
+		playerChoiceCard2Layout.setup(this, cardLayout2, 2, showBack ? CardLocation.BACK : CardLocation.MODAL);
 
 		if (gameView.isActivePlayer()) {
 			startHighlightAnimation(playerChoiceCard1Layout);
@@ -564,6 +563,7 @@ public class GameActivity extends ApplicationActivity {
 		gameTrade = (TextView) layout.findViewById(R.id.gameTrade);
 		gameDefense = (TextView) layout.findViewById(R.id.gameDefense);
 		gameFaith = (TextView) layout.findViewById(R.id.gameFaith);
+		increaseDecreaseText = (TextView) layout.findViewById(R.id.increaseDecreaseText);
 
 		cardDetailListener = new CardDetailListener();
 		gameResourceListener = new GameResourceListener(this);
@@ -584,6 +584,7 @@ public class GameActivity extends ApplicationActivity {
 		// TODO: Verify if this is still needed
 		initHighlightLayout();
 		initCardEventAnimation();
+		initIncreaseDecreaseAnimation();
 
 		Button stopGameButton = (Button) layout.findViewById(R.id.stopGameButton);
 		stopGameButton.setOnClickListener(new OnClickListener() {
@@ -652,7 +653,7 @@ public class GameActivity extends ApplicationActivity {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
+
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					hideCardLayoutDetail();
 				}
@@ -820,9 +821,28 @@ public class GameActivity extends ApplicationActivity {
 
 					GameEventDeckCard gameEventDeckCard = (GameEventDeckCard) event;
 					CardLayout cardLayout = gameEventDeckCard.getResourceId() == 1 ? playerChoiceCard1Layout : playerChoiceCard2Layout;
-					animateCardEvent(gameEventDeckCard.getPlayerDeckCard(), cardLayout, playerFieldAttackLayout);
+					animateCardEvent(gameEventDeckCard.getPlayerDeckCard(), cardLayout, playerFieldAttackLayout, !gameView.isActivePlayer());
 					handleUpdateDisplay = true;
 
+				}
+				
+				else if (event instanceof GameEventIncreaseDecrease) {
+					
+					GameEventIncreaseDecrease gameEventIncreaseDecrease = (GameEventIncreaseDecrease) event;
+					switch ( gameEventIncreaseDecrease.getTarget() ) {
+						
+						case PLAYER_CURRENT_DEFENSE:
+							animateIncreaseDecreaseEvent(gameEventIncreaseDecrease, opponentFieldDefenseLayout);
+							break;
+							
+						case PLAYER_LIFE_POINTS:
+							break;
+							
+						default:
+							break;
+						
+					}
+					
 				}
 
 				else {
@@ -856,7 +876,26 @@ public class GameActivity extends ApplicationActivity {
 
 	}
 
+	private void initIncreaseDecreaseAnimation() {
+
+		increaseDecreaseAnimationSet = (AnimationSet) AnimationUtils.loadAnimation(this, R.anim.card_animation);
+		increaseDecreaseAnimationSet.setDuration(1000);
+		increaseDecreaseAnimationSet.setFillAfter(false);
+		increaseDecreaseAnimationSet.setFillEnabled(true);
+
+		increaseDecreaseTranslateAnimation = new TranslateAnimation(0, 0, 0, 0);
+		increaseDecreaseAnimationSet.setAnimationListener(gameAnimationListener);
+		increaseDecreaseAnimationSet.addAnimation(increaseDecreaseTranslateAnimation);
+
+	}
+
 	private void animateCardEvent(ICard card, View sourceLayout, View destinationLayout) {
+
+		animateCardEvent(card, sourceLayout, destinationLayout, false);
+		
+	}
+	
+	private void animateCardEvent(ICard card, View sourceLayout, View destinationLayout, boolean showBack) {
 
 		int[] sourceCoordinates = new int[2];
 		sourceLayout.getLocationInWindow(sourceCoordinates);
@@ -874,9 +913,41 @@ public class GameActivity extends ApplicationActivity {
 						- gameEventLayoutCoordinates[0], Animation.ABSOLUTE, sourceCoordinates[1] - gameEventLayoutCoordinates[1], Animation.ABSOLUTE, destinationCoordinates[1]
 						- gameEventLayoutCoordinates[1]));
 
-		gameEventLayout.setup(this, card, 0, CardLocation.ANIMATION);
+		gameEventLayout.setup(this, card, 0, showBack ? CardLocation.BACK : CardLocation.ANIMATION);
 		gameEventLayout.startAnimation(cardEventAnimationSet);
 
+	}
+	
+	private void animateIncreaseDecreaseEvent(GameEventIncreaseDecrease event, View layout) {
+		
+		increaseDecreaseText.setVisibility(View.VISIBLE);
+		int[] sourceCoordinates = new int[2];
+		layout.getLocationInWindow(sourceCoordinates);
+		int[] increaseDecreaseLayoutCoordinates = new int[2];
+		increaseDecreaseText.getLocationInWindow(increaseDecreaseLayoutCoordinates);
+
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+		increaseDecreaseAnimationSet.getAnimations().set(
+				0,
+				new TranslateAnimation(
+						Animation.ABSOLUTE, 
+						sourceCoordinates[0] - increaseDecreaseLayoutCoordinates[0],
+						Animation.ABSOLUTE,
+						sourceCoordinates[0] - increaseDecreaseLayoutCoordinates[0],
+						Animation.ABSOLUTE,
+						sourceCoordinates[1] - increaseDecreaseLayoutCoordinates[1],
+						Animation.ABSOLUTE,
+						sourceCoordinates[1] - increaseDecreaseLayoutCoordinates[1]
+				)
+		);
+
+		String txt = String.format("%s%s", event.getQuantity() > 0 ? "+" : "-", event.getQuantity());
+		increaseDecreaseText.setText(txt);
+		onError(txt);
+		increaseDecreaseText.startAnimation(increaseDecreaseAnimationSet);
+		
 	}
 
 	public CardLayout getGameEventLayout() {
@@ -916,12 +987,11 @@ public class GameActivity extends ApplicationActivity {
 					if (!handleDisplay) {
 						updateCardsDisplay();
 					}
-				}
-				else {
+				} else {
 					updateCardsDisplay();
 					displayEvents();
 				}
-				
+
 				break;
 
 			default:

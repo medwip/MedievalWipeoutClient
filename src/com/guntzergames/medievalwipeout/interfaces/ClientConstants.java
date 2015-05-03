@@ -2,7 +2,7 @@ package com.guntzergames.medievalwipeout.interfaces;
 
 public interface ClientConstants {
 	
-//	public static final String SERVER_IP_ADDRESS = "192.168.10.10";
+//	public static final String SERVER_IP_ADDRESS = "192.168.0.5";
 	public static final String SERVER_IP_ADDRESS = "guntzergames.ddns.net";
 
 	public static final String GAME_ID = "com.guntzergames.medievalwipeout.gameId";

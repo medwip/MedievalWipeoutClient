@@ -18,6 +18,7 @@
     <dimen name="cardDetailWidth">80dp</dimen>
     <dimen name="cardDetailHeight">160dp</dimen>
     <dimen name="cardImageWidth">40dp</dimen>
+    <dimen name="cardDetailImageHeight">80dp</dimen>
     <dimen name="cardModelImageWidth">50dp</dimen>
     <dimen name="cardModelNameWidth">50dp</dimen>
     <dimen name="cardModelListWidth">120dp</dimen>

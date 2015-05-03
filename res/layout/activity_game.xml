@@ -528,6 +528,14 @@
         android:padding="10dp" >
     </com.guntzergames.medievalwipeout.layouts.CardLayout>
 
+    <TextView 
+        android:id="@+id/increaseDecreaseText"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:text="@string/not_initialized"
+        android:visibility="invisible"
+        />
+    
     <com.guntzergames.medievalwipeout.layouts.CardLayout
         android:id="@+id/card_layout_detail"
         style="@style/CardStyle.Detail"

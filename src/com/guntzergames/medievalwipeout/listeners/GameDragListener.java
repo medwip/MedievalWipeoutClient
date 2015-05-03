@@ -66,11 +66,18 @@ public class GameDragListener implements OnDragListener {
 
 				int opponentDefense = gameActivity.getGameView().getOpponents().get(0).getCurrentDefense();
 				Log.d(TAG, String.format("opponentDefense = %s, dest = %s", opponentDefense, dest));
+				Log.i(TAG, " --> Number of cards: " + gameActivity.getGameView().getOpponents().get(0).getPlayerFieldDefense().getCards());
 
 				// Opponent field defense can be targeted only if opponent's
 				// defense is greater than 0
-				if (dest.getId() == R.id.opponentFieldDefense && opponentDefense > 0) {
-					return "opponentFieldDefense";
+				// or if there is no defense card anymore
+				if (dest.getId() == R.id.opponentFieldDefense) {
+					if ( opponentDefense > 0 ) {
+						return "opponentFieldDefense";
+					}
+					else if ( gameActivity.getGameView().getOpponents().get(0).getPlayerFieldDefense().getCards().isEmpty() ) {
+						return "opponentFieldDefense";
+					}
 				}
 				if (dest instanceof CardLayout) {
 

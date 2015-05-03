@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.guntzergames.medievalwipeout.abstracts.AbstractCard;
 import com.guntzergames.medievalwipeout.activities.R;
 import com.guntzergames.medievalwipeout.beans.CollectionElement;
 import com.guntzergames.medievalwipeout.beans.DeckTemplateElement;
@@ -40,7 +39,7 @@ public class CardLayout extends RelativeLayout {
 	private ImageView image, defensorImage, archerImage;
 
 	private LinearLayout rootView;
-	private ElementLayout nameLayout, defenseLayout, faithLayout, numberOfCardsLayout;
+	private ElementLayout numberOfCardsLayout;
 	private TextView attack, lifePoints, name, trade, defense, gold, faith;
 
 	public void hide() {
@@ -155,6 +154,10 @@ public class CardLayout extends RelativeLayout {
 	public void setup() {
 		
 		init();
+		
+		if ( cardLocation == CardLocation.BACK ) {
+			return;
+		}
 		
 		if (card instanceof PlayerDeckCard) {
 			
@@ -427,7 +430,10 @@ public class CardLayout extends RelativeLayout {
 		
 		layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		if ( card instanceof ResourceDeckCard ) {
+		if ( cardLocation == CardLocation.BACK ) {
+			rootView = (LinearLayout)layoutInflater.inflate(R.layout.card_back, null);
+		}
+		else if ( card instanceof ResourceDeckCard ) {
 			rootView = (LinearLayout)layoutInflater.inflate(R.layout.card_resource, null);
 			
 			reset();
