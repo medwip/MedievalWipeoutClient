@@ -59,6 +59,16 @@
                 android:layout_marginTop="10dp"
                 android:drawableLeft="@drawable/faith"
                 android:text="@string/not_initialized" />
+            
+            <TextView
+                android:id="@+id/gameAlchemy"
+                style="@style/Skill.Resource.Game"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/alchemy"
+                android:text="@string/not_initialized" />
+            
         </android.support.v7.widget.GridLayout>
 
         <ImageView
@@ -530,8 +540,9 @@
 
     <TextView 
         android:id="@+id/increaseDecreaseText"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:textSize="20sp"
         android:text="@string/not_initialized"
         android:visibility="invisible"
         />

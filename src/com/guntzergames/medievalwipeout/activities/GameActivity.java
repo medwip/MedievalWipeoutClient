@@ -471,7 +471,9 @@ public class GameActivity extends ApplicationActivity {
 				displayPlayerChoices(player.getPlayerDeckCard1(), player.getPlayerDeckCard2(), !gameView.isActivePlayer());
 				break;
 			case DURING_RESOURCE_SELECT:
-				startHighlightAnimation(gameResourcesLayout);
+				if ( gameView.isActivePlayer() ) {
+					startHighlightAnimation(gameResourcesLayout);
+				}
 				break;
 			case DURING_PLAY:
 				initOpponentDragListener();
@@ -920,7 +922,6 @@ public class GameActivity extends ApplicationActivity {
 	
 	private void animateIncreaseDecreaseEvent(GameEventIncreaseDecrease event, View layout) {
 		
-		increaseDecreaseText.setVisibility(View.VISIBLE);
 		int[] sourceCoordinates = new int[2];
 		layout.getLocationInWindow(sourceCoordinates);
 		int[] increaseDecreaseLayoutCoordinates = new int[2];
