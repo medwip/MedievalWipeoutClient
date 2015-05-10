@@ -15,19 +15,17 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 public class OnGetGameWebAsyncResponse extends AsyncHttpResponseHandler {
 
 	private static final String TAG = "OnGetGameWebAsyncResponse";
-	
+
 	private GameWebClientCallbackable callbackable;
 	private ResponseType responseType;
 
 	public enum ResponseType {
-		
-		GET_GAME(0), CHECK_GAME(0),
-		NEXT_PHASE(1), JOIN_GAME(1), DELETE_GAME(1), GIVE_UP_GAME(1),
-		GET_ACCOUNT(1), GET_CARD_MODELS(1), GET_GAMES(1), OPEN_PACKET(1),
-		GET_VERSION(1), GET_PACKAGE(1);
-		
+
+		GET_GAME(0), CHECK_GAME(0), NEXT_PHASE(1), JOIN_GAME(1), DELETE_GAME(1), GIVE_UP_GAME(1), GET_ACCOUNT(1), GET_CARD_MODELS(1), GET_GAMES(1), OPEN_PACKET(1), GET_VERSION(1), GET_PACKAGE(
+				1);
+
 		private int priority;
-		
+
 		private ResponseType(int priotity) {
 			this.priority = priotity;
 		}
@@ -77,52 +75,62 @@ public class OnGetGameWebAsyncResponse extends AsyncHttpResponseHandler {
 
 	@Override
 	public void onSuccess(String response) {
-		
-		Log.i(TAG, String.format("Successfull call to %s by %s [%s]",
-				responseType, callbackable.getClass().getSimpleName(), callbackable.getHttpCallsDone()));
-		
-		switch (responseType) {
-			case GET_ACCOUNT:
-				callbackable.onGetAccount(Account.fromJson(response));
-				break;
-			case GET_GAME:
-				callbackable.onGetGame(GameView.fromJson(response));
-				break;
-			case NEXT_PHASE:
-				callbackable.onGetGame(GameView.fromJson(response));
-				break;
-			case JOIN_GAME:
-				callbackable.onGameJoined(GameView.fromJson(response));
-				break;
-			case DELETE_GAME:
-				callbackable.onDeleteGame();
-				break;
-			case CHECK_GAME:
-				callbackable.onCheckGame(GameView.fromJson(response));
-				break;
-			case GET_CARD_MODELS:
-				callbackable.onGetCardModels(CardModelList.fromJson(response).getCardModels());
-				break;
-			case GET_GAMES:
-				callbackable.onGetGames(GameViewList.fromJson(response).getGameViews());
-				break;
-			case OPEN_PACKET:
-				callbackable.onOpenPacket(Packet.fromJson(response));
-				break;
-			case GET_VERSION:
-				callbackable.onGetVersion(response);
-				break;
-			default:
-				break;
 
+		Log.i(TAG, String.format("Successfull call to %s by %s [%s]", responseType, callbackable.getClass().getSimpleName(), callbackable.getHttpCallsDone()));
+
+		try {
+
+			switch (responseType) {
+				case GET_ACCOUNT:
+					callbackable.onGetAccount(Account.fromJson(response));
+					break;
+				case GET_GAME:
+					callbackable.onGetGame(GameView.fromJson(response));
+					break;
+				case NEXT_PHASE:
+					callbackable.onGetGame(GameView.fromJson(response));
+					break;
+				case JOIN_GAME:
+					callbackable.onGameJoined(GameView.fromJson(response));
+					break;
+				case DELETE_GAME:
+					callbackable.onDeleteGame();
+					break;
+				case CHECK_GAME:
+					callbackable.onCheckGame(GameView.fromJson(response));
+					break;
+				case GET_CARD_MODELS:
+					callbackable.onGetCardModels(CardModelList.fromJson(response).getCardModels());
+					break;
+				case GET_GAMES:
+					callbackable.onGetGames(GameViewList.fromJson(response).getGameViews());
+					break;
+				case OPEN_PACKET:
+					callbackable.onOpenPacket(Packet.fromJson(response));
+					break;
+				case GET_VERSION:
+					callbackable.onGetVersion(response);
+					break;
+				default:
+					break;
+
+			}
+
+		} catch (Exception e) {
+
+			callbackable.onError(String.format("Error occured for event %s: %s", responseType, e.getMessage()));
+			Log.e(TAG, e.getMessage(), e);
+			
 		}
+
 	}
 
 	@Override
 	public void onFailure(int arg0, Header[] arg1, byte[] arg2, Throwable arg3) {
 		callbackable.onError(responseType + " " + callbackable.getClass() + " " + callbackable.isInterruptedSignalSent() + " " + arg3.getMessage());
-		if ( !callbackable.isInterruptedSignalSent() ) {
-//			callbackable.onError(callbackable.isInterruptedSignalSent() + " " + arg3.getMessage());
+		if (!callbackable.isInterruptedSignalSent()) {
+			// callbackable.onError(callbackable.isInterruptedSignalSent() + " "
+			// + arg3.getMessage());
 		}
 	}
 

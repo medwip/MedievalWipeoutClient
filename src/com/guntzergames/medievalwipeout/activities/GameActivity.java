@@ -99,7 +99,7 @@ public class GameActivity extends ApplicationActivity {
 
 	private HorizontalScrollView handScrollView;
 
-	private TextView gameInfos, gameTrade, gameDefense, gameFaith, increaseDecreaseText;
+	private TextView gameInfos, gameTrade, gameDefense, gameFaith, gameAlchemy, increaseDecreaseText;
 
 	private Set<View> dragableRegisteredViews = new HashSet<View>();
 
@@ -565,6 +565,8 @@ public class GameActivity extends ApplicationActivity {
 		gameTrade = (TextView) layout.findViewById(R.id.gameTrade);
 		gameDefense = (TextView) layout.findViewById(R.id.gameDefense);
 		gameFaith = (TextView) layout.findViewById(R.id.gameFaith);
+		gameAlchemy = (TextView) layout.findViewById(R.id.gameAlchemy);
+		
 		increaseDecreaseText = (TextView) layout.findViewById(R.id.increaseDecreaseText);
 
 		cardDetailListener = new CardDetailListener();
@@ -631,6 +633,7 @@ public class GameActivity extends ApplicationActivity {
 		gameTrade.setOnClickListener(gameResourceListener);
 		gameDefense.setOnClickListener(gameResourceListener);
 		gameFaith.setOnClickListener(gameResourceListener);
+		gameAlchemy.setOnClickListener(gameResourceListener);
 
 		registerDragListener(layout);
 		registerDragListener(playerHandLayout);
@@ -933,7 +936,7 @@ public class GameActivity extends ApplicationActivity {
 		increaseDecreaseAnimationSet.getAnimations().set(
 				0,
 				new TranslateAnimation(
-						Animation.ABSOLUTE, 
+						Animation.ABSOLUTE,
 						sourceCoordinates[0] - increaseDecreaseLayoutCoordinates[0],
 						Animation.ABSOLUTE,
 						sourceCoordinates[0] - increaseDecreaseLayoutCoordinates[0],
@@ -1005,6 +1008,7 @@ public class GameActivity extends ApplicationActivity {
 		gameTrade.setText(String.format("%s", gameView.getTrade()));
 		gameDefense.setText(String.format("%s", gameView.getDefense()));
 		gameFaith.setText(String.format("%s", gameView.getFaith()));
+		gameAlchemy.setText(String.format("%s", gameView.getAlchemy()));
 
 		// Activate Next Phase only if this is the active player
 		if (gameView.isActivePlayer()) {

@@ -32,6 +32,15 @@
         android:drawableLeft="@drawable/faith"
         android:text="@string/not_initialized" />
 
+    <TextView
+        android:id="@+id/cardResourceAlchemy"
+        style="@style/Skill.Resource"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:drawableLeft="@drawable/alchemy"
+        android:text="@string/not_initialized" />
+
     <ImageView
         android:id="@+id/cardLayoutImage"
         android:layout_width="wrap_content"

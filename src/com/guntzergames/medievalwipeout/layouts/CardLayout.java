@@ -40,7 +40,7 @@ public class CardLayout extends RelativeLayout {
 
 	private LinearLayout rootView;
 	private ElementLayout numberOfCardsLayout;
-	private TextView attack, lifePoints, name, trade, defense, gold, faith;
+	private TextView attack, lifePoints, name, trade, defense, gold, faith, alchemy;
 
 	public void hide() {
 		this.setVisibility(View.INVISIBLE);
@@ -203,6 +203,8 @@ public class CardLayout extends RelativeLayout {
 				gold.setText(String.format("%s", playerDeckCard.getGoldCost()));
 				faith.setVisibility(View.VISIBLE);
 				faith.setText(String.format("%s", playerDeckCard.getFaithCost()));
+				alchemy.setVisibility(View.VISIBLE);
+				alchemy.setText(String.format("%s", playerDeckCard.getAlchemyCost()));
 //				lifePointsLayout.setup(getResources().getString(R.string.life_points), playerDeckCard.getLifePoints());
 			}
 			
@@ -358,10 +360,12 @@ public class CardLayout extends RelativeLayout {
 			trade.setVisibility(View.VISIBLE);
 			defense.setVisibility(View.VISIBLE);
 			faith.setVisibility(View.VISIBLE);
+			alchemy.setVisibility(View.VISIBLE);
 			
 			trade.setText(String.format("%s", resourceDeckCard.getTrade()));
 			defense.setText(String.format("%s", resourceDeckCard.getDefense()));
 			faith.setText(String.format("%s", resourceDeckCard.getFaith()));
+			alchemy.setText(String.format("%s", resourceDeckCard.getAlchemy()));
 			
 		}
 		
@@ -442,6 +446,7 @@ public class CardLayout extends RelativeLayout {
 			trade = (TextView)rootView.findViewById(R.id.cardResourceTrade);
 			defense = (TextView)rootView.findViewById(R.id.cardResourceDefense);
 			faith = (TextView)rootView.findViewById(R.id.cardResourceFaith);
+			alchemy = (TextView)rootView.findViewById(R.id.cardResourceAlchemy);
 		}
 		else {
 			rootView = (LinearLayout)layoutInflater.inflate(R.layout.card_creature, null);
@@ -453,6 +458,7 @@ public class CardLayout extends RelativeLayout {
 			lifePoints = (TextView)rootView.findViewById(R.id.cardLifePointsText);
 			gold = (TextView)rootView.findViewById(R.id.cardGold);
 			faith = (TextView)rootView.findViewById(R.id.cardFaith);
+			alchemy = (TextView)rootView.findViewById(R.id.cardAlchemy);
 			defensorImage = (ImageView)rootView.findViewById(R.id.cardDefensorImage);
 			archerImage = (ImageView)rootView.findViewById(R.id.cardArcheryImage);
 			numberOfCardsLayout = (ElementLayout)rootView.findViewById(R.id.numberOfCardsLayout);

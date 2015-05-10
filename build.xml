@@ -1,3 +1,12 @@
+<!-- 
+
+	How to deploy a new version on the server:
+	
+		1) Modify assets/version to an upper version value
+		2) Recompile in order to generare a new APK embedding this new version number
+		3) Execute this script
+
+ -->
 <project
     name="ClientPackage"
     basedir="."
