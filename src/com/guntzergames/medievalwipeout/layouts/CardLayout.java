@@ -1,6 +1,7 @@
 package com.guntzergames.medievalwipeout.layouts;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -21,6 +22,7 @@ import com.guntzergames.medievalwipeout.beans.PlayerDeckCard;
 import com.guntzergames.medievalwipeout.beans.PlayerFieldCard;
 import com.guntzergames.medievalwipeout.beans.PlayerHandCard;
 import com.guntzergames.medievalwipeout.beans.ResourceDeckCard;
+import com.guntzergames.medievalwipeout.beans.Skill;
 import com.guntzergames.medievalwipeout.enums.CardLocation;
 import com.guntzergames.medievalwipeout.interfaces.ICard;
 
@@ -40,7 +42,7 @@ public class CardLayout extends RelativeLayout {
 
 	private LinearLayout rootView;
 	private ElementLayout numberOfCardsLayout;
-	private TextView attack, lifePoints, name, trade, defense, gold, faith, alchemy;
+	private TextView attack, lifePoints, name, trade, defense, gold, faith, alchemy, skillsText;
 
 	public void hide() {
 		this.setVisibility(View.INVISIBLE);
@@ -213,6 +215,13 @@ public class CardLayout extends RelativeLayout {
 			}
 			if ( !playerDeckCard.isDefensor() ) {
 				defensorImage.setVisibility(View.INVISIBLE);
+			}
+			
+			List<Skill> skills = playerDeckCard.getSkills();
+			
+			if ( skills != null && !skills.isEmpty() ) {
+				skillsText.setVisibility(View.VISIBLE);
+				skillsText.setText(String.format("%s", skills.get(0)));
 			}
 			
 			Log.i(TAG, String.format("Card=%s, archer=%s, defensor=%s", playerDeckCard.getName(),
@@ -436,6 +445,8 @@ public class CardLayout extends RelativeLayout {
 		
 		if ( cardLocation == CardLocation.BACK ) {
 			rootView = (LinearLayout)layoutInflater.inflate(R.layout.card_back, null);
+			
+			reset();
 		}
 		else if ( card instanceof ResourceDeckCard ) {
 			rootView = (LinearLayout)layoutInflater.inflate(R.layout.card_resource, null);
@@ -461,6 +472,7 @@ public class CardLayout extends RelativeLayout {
 			alchemy = (TextView)rootView.findViewById(R.id.cardAlchemy);
 			defensorImage = (ImageView)rootView.findViewById(R.id.cardDefensorImage);
 			archerImage = (ImageView)rootView.findViewById(R.id.cardArcheryImage);
+			skillsText = (TextView)rootView.findViewById(R.id.cardSkills);
 			numberOfCardsLayout = (ElementLayout)rootView.findViewById(R.id.numberOfCardsLayout);
 		}
 		

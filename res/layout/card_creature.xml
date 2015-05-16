@@ -96,6 +96,14 @@
             android:text="@string/not_initialized"
             android:visibility="invisible" />
     </LinearLayout>
+    
+    <TextView
+            android:id="@+id/cardSkills"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/not_initialized"
+            android:visibility="invisible" />
 
     <com.guntzergames.medievalwipeout.layouts.ElementLayout
         android:id="@+id/numberOfCardsLayout"

@@ -34,6 +34,9 @@ public class GameResourceListener implements OnClickListener {
 			if (v.getId() == R.id.gameFaith) {
 				selectResource(CommonConstants.GAME_RESOURCE_FAITH);
 			}
+			if (v.getId() == R.id.gameAlchemy) {
+				selectResource(CommonConstants.GAME_RESOURCE_ALCHEMY);
+			}
 		}
 
 	}
