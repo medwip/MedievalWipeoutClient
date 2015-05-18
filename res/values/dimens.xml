@@ -31,4 +31,6 @@
     <dimen name="zoneHeight">160dp</dimen>
     <dimen name="collectionElementRowText">10sp</dimen>
     
+    <dimen name="increaseDecreaseTextWidth">20sp</dimen>
+    
 </resources>

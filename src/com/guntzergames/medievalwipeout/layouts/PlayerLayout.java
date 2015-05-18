@@ -59,5 +59,45 @@ public class PlayerLayout extends LinearLayout {
 		playerLifePointsLayout.setup(context.getResources().getString(R.string.life_points), String.format("%s", player.getLifePoints()));
 		
 	}
+
+	public ElementLayout getTradeLayout() {
+		return tradeLayout;
+	}
+
+	public void setTradeLayout(ElementLayout tradeLayout) {
+		this.tradeLayout = tradeLayout;
+	}
+
+	public ElementLayout getGoldLayout() {
+		return goldLayout;
+	}
+
+	public void setGoldLayout(ElementLayout goldLayout) {
+		this.goldLayout = goldLayout;
+	}
+
+	public ElementLayout getDefenseLayout() {
+		return defenseLayout;
+	}
+
+	public void setDefenseLayout(ElementLayout defenseLayout) {
+		this.defenseLayout = defenseLayout;
+	}
+
+	public ElementLayout getFaithLayout() {
+		return faithLayout;
+	}
+
+	public void setFaithLayout(ElementLayout faithLayout) {
+		this.faithLayout = faithLayout;
+	}
+
+	public ElementLayout getPlayerLifePointsLayout() {
+		return playerLifePointsLayout;
+	}
+
+	public void setPlayerLifePointsLayout(ElementLayout playerLifePointsLayout) {
+		this.playerLifePointsLayout = playerLifePointsLayout;
+	}
 	
 }

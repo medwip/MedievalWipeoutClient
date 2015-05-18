@@ -221,11 +221,11 @@ public class CardLayout extends RelativeLayout {
 			
 			if ( skills != null && !skills.isEmpty() ) {
 				skillsText.setVisibility(View.VISIBLE);
-				skillsText.setText(String.format("%s", skills.get(0)));
+				skillsText.setText(String.format("%s", skills.get(0).getSkillCode()));
 			}
 			
-			Log.i(TAG, String.format("Card=%s, archer=%s, defensor=%s", playerDeckCard.getName(),
-					playerDeckCard.isArcher(), playerDeckCard.isDefensor()));
+			Log.i(TAG, String.format("Card=%s, archer=%s, defensor=%s, skills=%s", playerDeckCard.getName(),
+					playerDeckCard.isArcher(), playerDeckCard.isDefensor(), playerDeckCard.getSkills()));
 			
 			if ( card instanceof PlayerFieldCard && !detailShown ) {
 				PlayerFieldCard playerFieldCard = (PlayerFieldCard)card;

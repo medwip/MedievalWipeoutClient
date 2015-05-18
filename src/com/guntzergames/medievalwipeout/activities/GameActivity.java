@@ -71,7 +71,7 @@ public class GameActivity extends ApplicationActivity {
 
 	private static final String TAG = "GameActivity";
 
-	private RelativeLayout layout = null, playerChoicesLayout;
+	private RelativeLayout rootLayout = null, playerChoicesLayout;
 	private long gameId;
 	private String gameCommand;
 	private Player player, opponent;
@@ -88,8 +88,10 @@ public class GameActivity extends ApplicationActivity {
 
 	private GameAnimationListener gameAnimationListener;
 	private HighlightAnimationListener highlightAnimationListener;
-	private AnimationSet cardEventAnimationSet, increaseDecreaseAnimationSet, highlightAnimationSet;
-	private TranslateAnimation cardEventTranslationAnimation, increaseDecreaseTranslateAnimation, highlightTranslationAnimation;
+	private AnimationSet cardEventAnimationSet, highlightAnimationSet,
+		increaseDecreasePrimaryAnimationSet, increaseDecreaseSecondaryAnimationSet;
+	private TranslateAnimation cardEventTranslationAnimation, highlightTranslationAnimation,
+		increaseDecreasePrimaryTranslateAnimation, increaseDecreaseSecondaryTranslateAnimation;
 	private AlphaAnimation highlightAlphaAnimation;
 
 	private LinearLayout playerHandLayout, opponentFieldDefenseLayout, opponentFieldAttackLayout, playerFieldDefenseLayout, playerFieldAttackLayout, highlightLayout;
@@ -99,7 +101,8 @@ public class GameActivity extends ApplicationActivity {
 
 	private HorizontalScrollView handScrollView;
 
-	private TextView gameInfos, gameTrade, gameDefense, gameFaith, gameAlchemy, increaseDecreaseText;
+	private TextView gameInfos, gameTrade, gameDefense, gameFaith, gameAlchemy,
+		increaseDecreasePrimaryText, increaseDecreaseSecondaryText;
 
 	private Set<View> dragableRegisteredViews = new HashSet<View>();
 
@@ -129,7 +132,7 @@ public class GameActivity extends ApplicationActivity {
 
 	public void setBeingModified(boolean beingModified) {
 		this.beingModified = beingModified;
-		ImageView beingModifiedImageView = (ImageView) layout.findViewById(R.id.beingModified);
+		ImageView beingModifiedImageView = (ImageView) rootLayout.findViewById(R.id.beingModified);
 		beingModifiedImageView.setImageDrawable(getResources().getDrawable(beingModified ? R.drawable.red : R.drawable.green));
 	}
 
@@ -297,7 +300,7 @@ public class GameActivity extends ApplicationActivity {
 		int num = cardList.getCards().size();
 		for (int i = 0; i < numElem; i++) {
 
-			CardLayout cardLayout = (CardLayout) layout.findViewById(CardLayout.getCardFromId(layoutPrefix, i));
+			CardLayout cardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId(layoutPrefix, i));
 			if (i < num) {
 				AbstractCard card = cardList.getCards().get(i);
 				cardLayout.setup(this, card, i, cardLocation);
@@ -546,28 +549,29 @@ public class GameActivity extends ApplicationActivity {
 
 		init();
 
-		cardLayoutDetail = (CardLayout) layout.findViewById(R.id.card_layout_detail);
+		cardLayoutDetail = (CardLayout) rootLayout.findViewById(R.id.card_layout_detail);
 		cardLayoutDetail.setDetailShown(true);
 		hideCardLayoutDetail();
-		gameEventLayout = (CardLayout) layout.findViewById(R.id.gameEvent);
+		gameEventLayout = (CardLayout) rootLayout.findViewById(R.id.gameEvent);
 		gameEventLayout.setVisibility(View.INVISIBLE);
-		opponentPlayerLayout = (PlayerLayout) layout.findViewById(R.id.opponentPlayerLayout);
-		playerPlayerLayout = (PlayerLayout) layout.findViewById(R.id.playerPlayerLayout);
+		opponentPlayerLayout = (PlayerLayout) rootLayout.findViewById(R.id.opponentPlayerLayout);
+		playerPlayerLayout = (PlayerLayout) rootLayout.findViewById(R.id.playerPlayerLayout);
 
-		playerHandLayout = (LinearLayout) layout.findViewById(R.id.playerHand);
-		playerFieldDefenseLayout = (LinearLayout) layout.findViewById(R.id.playerFieldDefense);
-		playerFieldAttackLayout = (LinearLayout) layout.findViewById(R.id.playerFieldAttack);
-		opponentFieldDefenseLayout = (LinearLayout) layout.findViewById(R.id.opponentFieldDefense);
-		opponentFieldAttackLayout = (LinearLayout) layout.findViewById(R.id.opponentFieldAttack);
-		playerChoicesLayout = (RelativeLayout) layout.findViewById(R.id.playerChoices);
-		gameResourcesLayout = (GridLayout) layout.findViewById(R.id.gameResources);
+		playerHandLayout = (LinearLayout) rootLayout.findViewById(R.id.playerHand);
+		playerFieldDefenseLayout = (LinearLayout) rootLayout.findViewById(R.id.playerFieldDefense);
+		playerFieldAttackLayout = (LinearLayout) rootLayout.findViewById(R.id.playerFieldAttack);
+		opponentFieldDefenseLayout = (LinearLayout) rootLayout.findViewById(R.id.opponentFieldDefense);
+		opponentFieldAttackLayout = (LinearLayout) rootLayout.findViewById(R.id.opponentFieldAttack);
+		playerChoicesLayout = (RelativeLayout) rootLayout.findViewById(R.id.playerChoices);
+		gameResourcesLayout = (GridLayout) rootLayout.findViewById(R.id.gameResources);
 
-		gameTrade = (TextView) layout.findViewById(R.id.gameTrade);
-		gameDefense = (TextView) layout.findViewById(R.id.gameDefense);
-		gameFaith = (TextView) layout.findViewById(R.id.gameFaith);
-		gameAlchemy = (TextView) layout.findViewById(R.id.gameAlchemy);
+		gameTrade = (TextView) rootLayout.findViewById(R.id.gameTrade);
+		gameDefense = (TextView) rootLayout.findViewById(R.id.gameDefense);
+		gameFaith = (TextView) rootLayout.findViewById(R.id.gameFaith);
+		gameAlchemy = (TextView) rootLayout.findViewById(R.id.gameAlchemy);
 		
-		increaseDecreaseText = (TextView) layout.findViewById(R.id.increaseDecreaseText);
+		increaseDecreasePrimaryText = (TextView) rootLayout.findViewById(R.id.increaseDecreasePrimaryText);
+		increaseDecreaseSecondaryText = (TextView) rootLayout.findViewById(R.id.increaseDecreaseSecondaryText);
 
 		cardDetailListener = new CardDetailListener();
 		gameResourceListener = new GameResourceListener(this);
@@ -577,7 +581,7 @@ public class GameActivity extends ApplicationActivity {
 		gameAnimationListener = new GameAnimationListener(this);
 		highlightAnimationListener = new HighlightAnimationListener(highlightLayout);
 
-		handScrollView = (HorizontalScrollView) layout.findViewById(R.id.handScrollView);
+		handScrollView = (HorizontalScrollView) rootLayout.findViewById(R.id.handScrollView);
 
 		initField(playerHandLayout);
 		initField(opponentFieldDefenseLayout);
@@ -590,7 +594,7 @@ public class GameActivity extends ApplicationActivity {
 		initCardEventAnimation();
 		initIncreaseDecreaseAnimation();
 
-		Button stopGameButton = (Button) layout.findViewById(R.id.stopGameButton);
+		Button stopGameButton = (Button) rootLayout.findViewById(R.id.stopGameButton);
 		stopGameButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -601,7 +605,7 @@ public class GameActivity extends ApplicationActivity {
 			}
 		});
 
-		Button homeButton = (Button) layout.findViewById(R.id.homeButton);
+		Button homeButton = (Button) rootLayout.findViewById(R.id.homeButton);
 		homeButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -610,7 +614,7 @@ public class GameActivity extends ApplicationActivity {
 			}
 		});
 
-		Button getGameButton = (Button) layout.findViewById(R.id.getGameButton);
+		Button getGameButton = (Button) rootLayout.findViewById(R.id.getGameButton);
 		getGameButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -621,7 +625,7 @@ public class GameActivity extends ApplicationActivity {
 			}
 		});
 
-		nextPhaseButton = (Button) layout.findViewById(R.id.nextPhaseButton);
+		nextPhaseButton = (Button) rootLayout.findViewById(R.id.nextPhaseButton);
 		nextPhaseButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -635,7 +639,7 @@ public class GameActivity extends ApplicationActivity {
 		gameFaith.setOnClickListener(gameResourceListener);
 		gameAlchemy.setOnClickListener(gameResourceListener);
 
-		registerDragListener(layout);
+		registerDragListener(rootLayout);
 		registerDragListener(playerHandLayout);
 		registerDragListener(playerFieldDefenseLayout);
 		playerFieldDefenseLayout.setOnDragListener(gameDragListener);
@@ -643,10 +647,10 @@ public class GameActivity extends ApplicationActivity {
 		registerDragListener(opponentFieldDefenseLayout);
 		registerDragListener(opponentFieldAttackLayout);
 
-		playerChoiceCard1Layout = (CardLayout) layout.findViewById(CardLayout.getCardFromId("playerChoice", 0));
+		playerChoiceCard1Layout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId("playerChoice", 0));
 		playerChoiceCard1Layout.setOnClickListener(playerResourceListener);
 		playerChoiceCard1Layout.setDetailShown(true);
-		playerChoiceCard2Layout = (CardLayout) layout.findViewById(CardLayout.getCardFromId("playerChoice", 1));
+		playerChoiceCard2Layout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId("playerChoice", 1));
 		playerChoiceCard2Layout.setOnClickListener(playerResourceListener);
 		playerChoiceCard2Layout.setDetailShown(true);
 
@@ -690,9 +694,9 @@ public class GameActivity extends ApplicationActivity {
 
 		initIntentExtras();
 
-		layout = (RelativeLayout) LinearLayout.inflate(this, R.layout.activity_game, null);
+		rootLayout = (RelativeLayout) LinearLayout.inflate(this, R.layout.activity_game, null);
 
-		setContentView(layout);
+		setContentView(rootLayout);
 
 		getGame(gameId);
 
@@ -758,17 +762,17 @@ public class GameActivity extends ApplicationActivity {
 
 							if (type == PlayerType.PLAYER && source instanceof PlayerHandCard && destination instanceof PlayerFieldCard) {
 
-								CardLayout sourceCardLayout = (CardLayout) layout.findViewById(CardLayout.getCardFromId("playerHand", gameEventPlayCard.getSourceIndex()));
+								CardLayout sourceCardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId("playerHand", gameEventPlayCard.getSourceIndex()));
 								handleUpdateDisplay = true;
 								animateCardEvent(sourceCardLayout.getCard(), playerHandLayout, playerFieldDefenseLayout);
 
 							} else if (type == PlayerType.PLAYER && source instanceof PlayerFieldCard && destination instanceof PlayerFieldCard) {
 
 								PlayerFieldCard playerFieldCardSource = (PlayerFieldCard) source;
-								CardLayout sourceCardLayout = (CardLayout) layout.findViewById(CardLayout.getCardFromId(playerFieldCardSource.getField(),
+								CardLayout sourceCardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId(playerFieldCardSource.getField(),
 										gameEventPlayCard.getSourceIndex()));
 								PlayerFieldCard playerFieldCardDestination = (PlayerFieldCard) destination;
-								CardLayout destinationCardLayout = (CardLayout) layout.findViewById(CardLayout.getCardFromId(playerFieldCardDestination.getField(),
+								CardLayout destinationCardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId(playerFieldCardDestination.getField(),
 										gameEventPlayCard.getDestinationIndex()));
 								Log.i(TAG, String.format("playerFieldCard=%s, location=%s, playerFieldCard.getField()=%s", playerFieldCardSource,
 										playerFieldCardSource.getLocation(), playerFieldCardSource.getField()));
@@ -779,7 +783,7 @@ public class GameActivity extends ApplicationActivity {
 								if (gameEventPlayCard.getEventType() == EventType.ATTACK_DEFENSE_FIELD) {
 									destinationView = opponentFieldDefenseLayout;
 								} else if (gameEventPlayCard.getEventType() == EventType.ATTACK_ATTACK_CARD) {
-									destinationView = (CardLayout) layout.findViewById(CardLayout.getCardFromId("opponentFieldAttack", gameEventPlayCard.getDestinationIndex()));
+									destinationView = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId("opponentFieldAttack", gameEventPlayCard.getDestinationIndex()));
 								}
 
 								animateCardEvent(sourceCardLayout.getCard(), (View) sourceCardLayout.getParent(), destinationView);
@@ -834,13 +838,26 @@ public class GameActivity extends ApplicationActivity {
 				else if (event instanceof GameEventIncreaseDecrease) {
 					
 					GameEventIncreaseDecrease gameEventIncreaseDecrease = (GameEventIncreaseDecrease) event;
+					PlayerLayout playerLayout = (gameEventIncreaseDecrease.getPlayerType() == PlayerType.PLAYER ? playerPlayerLayout : opponentPlayerLayout);
+					
 					switch ( gameEventIncreaseDecrease.getTarget() ) {
 						
 						case PLAYER_CURRENT_DEFENSE:
-							animateIncreaseDecreaseEvent(gameEventIncreaseDecrease, opponentFieldDefenseLayout);
+							animateIncreaseDecreaseEvent(
+								gameEventIncreaseDecrease,
+								playerLayout.getDefenseLayout(),
+								increaseDecreasePrimaryText,
+								increaseDecreasePrimaryAnimationSet
+							);
 							break;
 							
 						case PLAYER_LIFE_POINTS:
+							animateIncreaseDecreaseEvent(
+								gameEventIncreaseDecrease,
+								playerLayout.getPlayerLifePointsLayout(),
+								increaseDecreaseSecondaryText,
+								increaseDecreaseSecondaryAnimationSet
+							);
 							break;
 							
 						default:
@@ -883,14 +900,23 @@ public class GameActivity extends ApplicationActivity {
 
 	private void initIncreaseDecreaseAnimation() {
 
-		increaseDecreaseAnimationSet = (AnimationSet) AnimationUtils.loadAnimation(this, R.anim.card_animation);
-		increaseDecreaseAnimationSet.setDuration(1000);
-		increaseDecreaseAnimationSet.setFillAfter(false);
-		increaseDecreaseAnimationSet.setFillEnabled(true);
+		increaseDecreasePrimaryAnimationSet = (AnimationSet) AnimationUtils.loadAnimation(this, R.anim.card_animation);
+		increaseDecreasePrimaryAnimationSet.setDuration(3000);
+		increaseDecreasePrimaryAnimationSet.setFillAfter(false);
+		increaseDecreasePrimaryAnimationSet.setFillEnabled(true);
 
-		increaseDecreaseTranslateAnimation = new TranslateAnimation(0, 0, 0, 0);
-		increaseDecreaseAnimationSet.setAnimationListener(gameAnimationListener);
-		increaseDecreaseAnimationSet.addAnimation(increaseDecreaseTranslateAnimation);
+		increaseDecreasePrimaryTranslateAnimation = new TranslateAnimation(0, 0, 0, 0);
+		increaseDecreasePrimaryAnimationSet.setAnimationListener(gameAnimationListener);
+		increaseDecreasePrimaryAnimationSet.addAnimation(increaseDecreasePrimaryTranslateAnimation);
+
+		increaseDecreaseSecondaryAnimationSet = (AnimationSet) AnimationUtils.loadAnimation(this, R.anim.card_animation);
+		increaseDecreaseSecondaryAnimationSet.setDuration(3000);
+		increaseDecreaseSecondaryAnimationSet.setFillAfter(false);
+		increaseDecreaseSecondaryAnimationSet.setFillEnabled(true);
+
+		increaseDecreaseSecondaryTranslateAnimation = new TranslateAnimation(0, 0, 0, 0);
+		increaseDecreaseSecondaryAnimationSet.setAnimationListener(gameAnimationListener);
+		increaseDecreaseSecondaryAnimationSet.addAnimation(increaseDecreaseSecondaryTranslateAnimation);
 
 	}
 
@@ -923,7 +949,7 @@ public class GameActivity extends ApplicationActivity {
 
 	}
 	
-	private void animateIncreaseDecreaseEvent(GameEventIncreaseDecrease event, View layout) {
+	private void animateIncreaseDecreaseEvent(GameEventIncreaseDecrease event, View layout, TextView increaseDecreaseText, AnimationSet animationSet) {
 		
 		int[] sourceCoordinates = new int[2];
 		layout.getLocationInWindow(sourceCoordinates);
@@ -933,7 +959,7 @@ public class GameActivity extends ApplicationActivity {
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-		increaseDecreaseAnimationSet.getAnimations().set(
+		animationSet.getAnimations().set(
 				0,
 				new TranslateAnimation(
 						Animation.ABSOLUTE,
@@ -947,10 +973,10 @@ public class GameActivity extends ApplicationActivity {
 				)
 		);
 
-		String txt = String.format("%s%s", event.getQuantity() > 0 ? "+" : "-", event.getQuantity());
+		String txt = String.format("%s%s", event.getQuantity() > 0 ? "+" : "", event.getQuantity());
 		increaseDecreaseText.setText(txt);
-		onError(txt);
-		increaseDecreaseText.startAnimation(increaseDecreaseAnimationSet);
+		onError(event.getTarget() + " " + txt + " " + increaseDecreaseText);
+		increaseDecreaseText.startAnimation(animationSet);
 		
 	}
 
@@ -972,7 +998,7 @@ public class GameActivity extends ApplicationActivity {
 
 		Log.i(TAG, String.format("Entering onGetGame: state=%s, phase=%s", gameView.getGameState(), gameView.getPhase()));
 
-		gameInfos = (TextView) layout.findViewById(R.id.gameInfos);
+		gameInfos = (TextView) rootLayout.findViewById(R.id.gameInfos);
 		this.gameView = gameView;
 
 		player = gameView.getPlayer();

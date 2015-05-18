@@ -539,10 +539,19 @@
     </com.guntzergames.medievalwipeout.layouts.CardLayout>
 
     <TextView 
-        android:id="@+id/increaseDecreaseText"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:textSize="20sp"
+        android:id="@+id/increaseDecreasePrimaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/increaseDecreaseTextWidth"
+        android:text="@string/not_initialized"
+        android:visibility="invisible"
+        />
+    
+    <TextView 
+        android:id="@+id/increaseDecreaseSecondaryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/increaseDecreaseTextWidth"
         android:text="@string/not_initialized"
         android:visibility="invisible"
         />
