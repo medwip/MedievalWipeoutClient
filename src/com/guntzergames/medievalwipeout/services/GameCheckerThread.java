@@ -73,7 +73,7 @@ public class GameCheckerThread extends Thread {
 				Log.e(TAG, String.format("Error occured while sleeping: %s", e.getMessage()));
 			}
 			
-			if ( !interruptedSignalSent && !paused && !gameActivity.isHttpRequestBeingExecuted() ) {
+			if ( !interruptedSignalSent && !paused && !gameActivity.isHttpRequestBeingExecuted() && !gameActivity.isBeingModified() ) {
 				getGame(gameId);
 			}
 			

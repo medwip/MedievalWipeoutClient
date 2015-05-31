@@ -76,7 +76,7 @@ public class OnGetGameWebAsyncResponse extends AsyncHttpResponseHandler {
 	@Override
 	public void onSuccess(String response) {
 
-		Log.i(TAG, String.format("Successfull call to %s by %s [%s]", responseType, callbackable.getClass().getSimpleName(), callbackable.getHttpCallsDone()));
+		Log.i(TAG, String.format("Perf Monitor: Successfull call to %s by %s [%s]", responseType, callbackable.getClass().getSimpleName(), callbackable.getHttpCallsDone()));
 
 		try {
 

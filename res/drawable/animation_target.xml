@@ -7,6 +7,6 @@
         android:duration="500"/>
     <item
         android:drawable="@drawable/highlight_border2"
-        android:duration="2500"/>
+        android:duration="1500"/>
 
 </animation-list>

@@ -489,15 +489,6 @@
         android:layout_toLeftOf="@id/getGameButton"
         android:text="@string/next_phase" />
 
-    <ImageButton
-        android:id="@+id/deckButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@id/nextPhaseButton"
-        android:contentDescription="@string/deck"
-        android:src="@drawable/abc_ab_bottom_solid_dark_holo" />
-
     <RelativeLayout
         android:id="@+id/playerChoices"
         android:layout_width="wrap_content"

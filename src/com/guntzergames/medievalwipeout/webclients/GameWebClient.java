@@ -1,5 +1,7 @@
 package com.guntzergames.medievalwipeout.webclients;
 
+import android.util.Log;
+
 import com.guntzergames.medievalwipeout.activities.GameActivity;
 import com.guntzergames.medievalwipeout.interfaces.GameWebClientCallbackable;
 import com.guntzergames.medievalwipeout.services.GameCheckerThread;
@@ -7,6 +9,8 @@ import com.guntzergames.medievalwipeout.webclients.OnGetGameWebAsyncResponse.Res
 import com.loopj.android.http.AsyncHttpClient;
 
 public class GameWebClient {
+	
+	private static final String TAG = "GameWebClient";
 
 	private AsyncHttpClient client = null;
 	private OnGetGameWebAsyncResponse onGetGameWebAsyncResponse;
@@ -18,6 +22,7 @@ public class GameWebClient {
 		onGetGameWebAsyncResponse.setResponseType(responseType);
 		
 		if ( !(callbackable.isHttpRequestBeingExecuted() && responseType.getPriority() < callbackable.getCurrentRequestPriority()) ) {
+			Log.i(TAG, String.format("Perf Monitor: GET request sent: %s", url));
 			client.get(url,	null, onGetGameWebAsyncResponse);
 		}
 		else {

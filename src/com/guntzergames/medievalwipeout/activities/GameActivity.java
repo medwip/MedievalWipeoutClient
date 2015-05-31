@@ -88,10 +88,9 @@ public class GameActivity extends ApplicationActivity {
 
 	private GameAnimationListener gameAnimationListener;
 	private HighlightAnimationListener highlightAnimationListener;
-	private AnimationSet cardEventAnimationSet, highlightAnimationSet,
-		increaseDecreasePrimaryAnimationSet, increaseDecreaseSecondaryAnimationSet;
-	private TranslateAnimation cardEventTranslationAnimation, highlightTranslationAnimation,
-		increaseDecreasePrimaryTranslateAnimation, increaseDecreaseSecondaryTranslateAnimation;
+	private AnimationSet cardEventAnimationSet, highlightAnimationSet, increaseDecreasePrimaryAnimationSet, increaseDecreaseSecondaryAnimationSet;
+	private TranslateAnimation cardEventTranslationAnimation, highlightTranslationAnimation, increaseDecreasePrimaryTranslateAnimation,
+			increaseDecreaseSecondaryTranslateAnimation;
 	private AlphaAnimation highlightAlphaAnimation;
 
 	private LinearLayout playerHandLayout, opponentFieldDefenseLayout, opponentFieldAttackLayout, playerFieldDefenseLayout, playerFieldAttackLayout, highlightLayout;
@@ -101,8 +100,7 @@ public class GameActivity extends ApplicationActivity {
 
 	private HorizontalScrollView handScrollView;
 
-	private TextView gameInfos, gameTrade, gameDefense, gameFaith, gameAlchemy,
-		increaseDecreasePrimaryText, increaseDecreaseSecondaryText;
+	private TextView gameInfos, gameTrade, gameDefense, gameFaith, gameAlchemy, increaseDecreasePrimaryText, increaseDecreaseSecondaryText;
 
 	private Set<View> dragableRegisteredViews = new HashSet<View>();
 
@@ -357,13 +355,18 @@ public class GameActivity extends ApplicationActivity {
 
 	}
 
-	public void startAnimation(View view, int index) {
+	public boolean startAnimation(View view, int index) {
+
+		boolean animated = false;
 
 		AnimationDrawable animationDrawable = getAnimationDrawable(view, index);
 		if (animationDrawable != null) {
 			animationDrawable.setAlpha(255);
 			animationDrawable.start();
+			animated = true;
 		}
+
+		return animated;
 
 	}
 
@@ -389,9 +392,9 @@ public class GameActivity extends ApplicationActivity {
 
 	}
 
-	public void startTargetAnimation(View view) {
+	public boolean startTargetAnimation(View view) {
 
-		startAnimation(view, 1);
+		return startAnimation(view, 1);
 
 	}
 
@@ -456,6 +459,7 @@ public class GameActivity extends ApplicationActivity {
 		stopTargetAnimationLayout(playerFieldDefenseLayout);
 		stopTargetAnimationLayout(playerFieldAttackLayout);
 		stopTargetAnimationLayout(opponentFieldDefenseLayout);
+		// TODO it's a test
 		stopTargetAnimationLayout(opponentFieldAttackLayout);
 		stopTargetAnimationLayout(playerChoicesLayout);
 		stopTargetAnimation(cardLayoutDetail);
@@ -474,7 +478,7 @@ public class GameActivity extends ApplicationActivity {
 				displayPlayerChoices(player.getPlayerDeckCard1(), player.getPlayerDeckCard2(), !gameView.isActivePlayer());
 				break;
 			case DURING_RESOURCE_SELECT:
-				if ( gameView.isActivePlayer() ) {
+				if (gameView.isActivePlayer()) {
 					startHighlightAnimation(gameResourcesLayout);
 				}
 				break;
@@ -569,7 +573,7 @@ public class GameActivity extends ApplicationActivity {
 		gameDefense = (TextView) rootLayout.findViewById(R.id.gameDefense);
 		gameFaith = (TextView) rootLayout.findViewById(R.id.gameFaith);
 		gameAlchemy = (TextView) rootLayout.findViewById(R.id.gameAlchemy);
-		
+
 		increaseDecreasePrimaryText = (TextView) rootLayout.findViewById(R.id.increaseDecreasePrimaryText);
 		increaseDecreaseSecondaryText = (TextView) rootLayout.findViewById(R.id.increaseDecreaseSecondaryText);
 
@@ -760,49 +764,54 @@ public class GameActivity extends ApplicationActivity {
 
 						case DURING_PLAY:
 
-							if (type == PlayerType.PLAYER && source instanceof PlayerHandCard && destination instanceof PlayerFieldCard) {
+							if (destination instanceof PlayerFieldCard) {
 
-								CardLayout sourceCardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId("playerHand", gameEventPlayCard.getSourceIndex()));
-								handleUpdateDisplay = true;
-								animateCardEvent(sourceCardLayout.getCard(), playerHandLayout, playerFieldDefenseLayout);
-
-							} else if (type == PlayerType.PLAYER && source instanceof PlayerFieldCard && destination instanceof PlayerFieldCard) {
-
-								PlayerFieldCard playerFieldCardSource = (PlayerFieldCard) source;
-								CardLayout sourceCardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId(playerFieldCardSource.getField(),
-										gameEventPlayCard.getSourceIndex()));
 								PlayerFieldCard playerFieldCardDestination = (PlayerFieldCard) destination;
-								CardLayout destinationCardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId(playerFieldCardDestination.getField(),
-										gameEventPlayCard.getDestinationIndex()));
-								Log.i(TAG, String.format("playerFieldCard=%s, location=%s, playerFieldCard.getField()=%s", playerFieldCardSource,
-										playerFieldCardSource.getLocation(), playerFieldCardSource.getField()));
 								handleUpdateDisplay = true;
 
-								View destinationView = destinationCardLayout;
+								// Play from hand
+								if (source instanceof PlayerHandCard) {
 
-								if (gameEventPlayCard.getEventType() == EventType.ATTACK_DEFENSE_FIELD) {
-									destinationView = opponentFieldDefenseLayout;
-								} else if (gameEventPlayCard.getEventType() == EventType.ATTACK_ATTACK_CARD) {
-									destinationView = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId("opponentFieldAttack", gameEventPlayCard.getDestinationIndex()));
+									if (type == PlayerType.PLAYER) {
+
+										CardLayout sourceCardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId("playerHand",
+												gameEventPlayCard.getSourceIndex()));
+										animateCardEvent(sourceCardLayout.getCard(), sourceCardLayout,
+												playerFieldCardDestination.getLocation() == Location.ATTACK ? playerFieldAttackLayout : playerFieldDefenseLayout);
+
+									} else {
+
+										animateCardEvent(destination, gameInfos, playerFieldCardDestination.getLocation().equals(Location.DEFENSE) ? opponentFieldDefenseLayout
+												: opponentFieldAttackLayout);
+									}
+
 								}
 
-								animateCardEvent(sourceCardLayout.getCard(), (View) sourceCardLayout.getParent(), destinationView);
+								// Play from field
+								else if ( source instanceof PlayerFieldCard ) {
 
-							} else if (type == PlayerType.OPPONENT && source instanceof PlayerHandCard && destination instanceof PlayerFieldCard) {
+									PlayerFieldCard playerFieldCardSource = (PlayerFieldCard) source;
+									CardLayout sourceCardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId(playerFieldCardSource.getField(type),
+											gameEventPlayCard.getSourceIndex()));
+									CardLayout destinationCardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId(playerFieldCardDestination.getField(type),
+											gameEventPlayCard.getDestinationIndex()));
+									View destinationView = destinationCardLayout;
 
-								handleUpdateDisplay = true;
-								PlayerFieldCard playerFieldCardDestination = (PlayerFieldCard) destination;
-								animateCardEvent(destination, gameInfos, playerFieldCardDestination.getLocation().equals(Location.DEFENSE) ? opponentFieldDefenseLayout
-										: opponentFieldAttackLayout);
+									if (gameEventPlayCard.getEventType() == EventType.ATTACK_DEFENSE_FIELD) {
+										destinationView = (type == PlayerType.PLAYER ? opponentFieldDefenseLayout : playerFieldDefenseLayout);
+									} else if (gameEventPlayCard.getEventType() == EventType.ATTACK_ATTACK_CARD) {
+										destinationView = destinationCardLayout;
+									}
 
-							} else if (type == PlayerType.OPPONENT && source instanceof PlayerFieldCard && destination instanceof PlayerFieldCard) {
+									Log.i(TAG,
+											String.format("playerFieldCard=%s, location=%s, playerFieldCard.getField()=%s", playerFieldCardSource,
+													playerFieldCardSource.getLocation(), playerFieldCardSource.getField(type)));
 
-								handleUpdateDisplay = true;
-								PlayerFieldCard playerFieldCardSource = (PlayerFieldCard) source;
-								PlayerFieldCard playerFieldCardDestination = (PlayerFieldCard) destination;
-								animateCardEvent(destination,
-										playerFieldCardSource.getLocation().equals(Location.DEFENSE) ? opponentFieldDefenseLayout : opponentFieldAttackLayout,
-										playerFieldCardDestination.getLocation().equals(Location.DEFENSE) ? playerFieldDefenseLayout : playerFieldAttackLayout);
+									animateCardEvent(sourceCardLayout.getCard(), sourceCardLayout, destinationView);
+
+								} else {
+									str += gameEventPlayCard.toString() + "\n";
+								}
 
 							} else {
 								str += gameEventPlayCard.toString() + "\n";
@@ -834,37 +843,29 @@ public class GameActivity extends ApplicationActivity {
 					handleUpdateDisplay = true;
 
 				}
-				
+
 				else if (event instanceof GameEventIncreaseDecrease) {
-					
+
 					GameEventIncreaseDecrease gameEventIncreaseDecrease = (GameEventIncreaseDecrease) event;
 					PlayerLayout playerLayout = (gameEventIncreaseDecrease.getPlayerType() == PlayerType.PLAYER ? playerPlayerLayout : opponentPlayerLayout);
-					
-					switch ( gameEventIncreaseDecrease.getTarget() ) {
-						
+
+					switch (gameEventIncreaseDecrease.getTarget()) {
+
 						case PLAYER_CURRENT_DEFENSE:
-							animateIncreaseDecreaseEvent(
-								gameEventIncreaseDecrease,
-								playerLayout.getDefenseLayout(),
-								increaseDecreasePrimaryText,
-								increaseDecreasePrimaryAnimationSet
-							);
+							animateIncreaseDecreaseEvent(gameEventIncreaseDecrease, playerLayout.getDefenseLayout(), increaseDecreasePrimaryText,
+									increaseDecreasePrimaryAnimationSet);
 							break;
-							
+
 						case PLAYER_LIFE_POINTS:
-							animateIncreaseDecreaseEvent(
-								gameEventIncreaseDecrease,
-								playerLayout.getPlayerLifePointsLayout(),
-								increaseDecreaseSecondaryText,
-								increaseDecreaseSecondaryAnimationSet
-							);
+							animateIncreaseDecreaseEvent(gameEventIncreaseDecrease, playerLayout.getPlayerLifePointsLayout(), increaseDecreaseSecondaryText,
+									increaseDecreaseSecondaryAnimationSet);
 							break;
-							
+
 						default:
 							break;
-						
+
 					}
-					
+
 				}
 
 				else {
@@ -923,9 +924,9 @@ public class GameActivity extends ApplicationActivity {
 	private void animateCardEvent(ICard card, View sourceLayout, View destinationLayout) {
 
 		animateCardEvent(card, sourceLayout, destinationLayout, false);
-		
+
 	}
-	
+
 	private void animateCardEvent(ICard card, View sourceLayout, View destinationLayout, boolean showBack) {
 
 		int[] sourceCoordinates = new int[2];
@@ -940,7 +941,13 @@ public class GameActivity extends ApplicationActivity {
 
 		cardEventAnimationSet.getAnimations().set(
 				0,
-				new TranslateAnimation(Animation.ABSOLUTE, metrics.widthPixels / 2 - gameEventLayoutCoordinates[0], Animation.ABSOLUTE, destinationCoordinates[0]
+				new TranslateAnimation(Animation.ABSOLUTE, sourceCoordinates[0] /*
+																				 * metrics
+																				 * .
+																				 * widthPixels
+																				 * /
+																				 * 2
+																				 */- gameEventLayoutCoordinates[0], Animation.ABSOLUTE, destinationCoordinates[0]
 						- gameEventLayoutCoordinates[0], Animation.ABSOLUTE, sourceCoordinates[1] - gameEventLayoutCoordinates[1], Animation.ABSOLUTE, destinationCoordinates[1]
 						- gameEventLayoutCoordinates[1]));
 
@@ -948,9 +955,9 @@ public class GameActivity extends ApplicationActivity {
 		gameEventLayout.startAnimation(cardEventAnimationSet);
 
 	}
-	
+
 	private void animateIncreaseDecreaseEvent(GameEventIncreaseDecrease event, View layout, TextView increaseDecreaseText, AnimationSet animationSet) {
-		
+
 		int[] sourceCoordinates = new int[2];
 		layout.getLocationInWindow(sourceCoordinates);
 		int[] increaseDecreaseLayoutCoordinates = new int[2];
@@ -961,23 +968,15 @@ public class GameActivity extends ApplicationActivity {
 
 		animationSet.getAnimations().set(
 				0,
-				new TranslateAnimation(
-						Animation.ABSOLUTE,
-						sourceCoordinates[0] - increaseDecreaseLayoutCoordinates[0],
-						Animation.ABSOLUTE,
-						sourceCoordinates[0] - increaseDecreaseLayoutCoordinates[0],
-						Animation.ABSOLUTE,
-						sourceCoordinates[1] - increaseDecreaseLayoutCoordinates[1],
-						Animation.ABSOLUTE,
-						sourceCoordinates[1] - increaseDecreaseLayoutCoordinates[1]
-				)
-		);
+				new TranslateAnimation(Animation.ABSOLUTE, sourceCoordinates[0] - increaseDecreaseLayoutCoordinates[0], Animation.ABSOLUTE, sourceCoordinates[0]
+						- increaseDecreaseLayoutCoordinates[0], Animation.ABSOLUTE, sourceCoordinates[1] - increaseDecreaseLayoutCoordinates[1], Animation.ABSOLUTE,
+						sourceCoordinates[1] - increaseDecreaseLayoutCoordinates[1]));
 
 		String txt = String.format("%s%s", event.getQuantity() > 0 ? "+" : "", event.getQuantity());
 		increaseDecreaseText.setText(txt);
 		onError(event.getTarget() + " " + txt + " " + increaseDecreaseText);
 		increaseDecreaseText.startAnimation(animationSet);
-		
+
 	}
 
 	public CardLayout getGameEventLayout() {
@@ -996,7 +995,7 @@ public class GameActivity extends ApplicationActivity {
 			return;
 		}
 
-		Log.i(TAG, String.format("Entering onGetGame: state=%s, phase=%s", gameView.getGameState(), gameView.getPhase()));
+		Log.i(TAG, String.format("Perf Monitor: Entering onGetGame: state=%s, phase=%s", gameView.getGameState(), gameView.getPhase()));
 
 		gameInfos = (TextView) rootLayout.findViewById(R.id.gameInfos);
 		this.gameView = gameView;
@@ -1043,7 +1042,7 @@ public class GameActivity extends ApplicationActivity {
 			nextPhaseButton.setEnabled(false);
 		}
 
-		Log.i(TAG, String.format("Leaving onGetGame()"));
+		Log.i(TAG, String.format("Perf Monitor: Leaving onGetGame()"));
 
 	}
 

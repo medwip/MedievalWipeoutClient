@@ -1,9 +1,9 @@
 <resources>
 
     <dimen name="text_size_title">8dp</dimen>
-    <dimen name="fieldHeight">160dp</dimen>
+    <dimen name="fieldHeight">150dp</dimen>
     <dimen name="playerHandHeight">200dp</dimen>
-    <dimen name="zoneHeight">220dp</dimen>
+    <dimen name="zoneHeight">300dp</dimen>
     <dimen name="cardWidth">120dp</dimen>
     <dimen name="cardHeight">180dp</dimen>
     <dimen name="cardDetailWidth">160dp</dimen>

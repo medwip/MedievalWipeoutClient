@@ -111,7 +111,8 @@ public class GameDragListener implements OnDragListener {
 		for (View view : gameActivity.getDragableRegisteredViews()) {
 			if (getPossibleTarget(cardLayout, view) != null) {
 				targetViews.add(view);
-				gameActivity.startTargetAnimation(view);
+				boolean animated = gameActivity.startTargetAnimation(view);
+				Log.i(TAG, String.format("target view: %s animated %s", view, animated));
 			}
 		}
 

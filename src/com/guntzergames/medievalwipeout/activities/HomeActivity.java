@@ -46,7 +46,7 @@ public class HomeActivity extends ApplicationActivity {
 	private long gameId, selectedDeckTemplateId;
 	private GraphUser user = null;
 	private Button createGameButton, editDeckButton;
-	private TextView debugTextView = null;
+	private TextView debugTextView, footer;
 	private ProgressBar loader;
 	private int gameCheckAttempts;
 	private HomeCheckerThread gameCheckerThread = null;
@@ -87,6 +87,7 @@ public class HomeActivity extends ApplicationActivity {
 
 		editDeckButton = (Button) layout.findViewById(R.id.editDeck);
 		debugTextView = (TextView) layout.findViewById(R.id.debug);
+		footer = (TextView) layout.findViewById(R.id.footer);
 		loader = (ProgressBar) layout.findViewById(R.id.progressBar);
 		deckTemplateListView = (ListView) layout.findViewById(R.id.deckTemplatesList);
 		gameListView = (ListView) layout.findViewById(R.id.gamesList);
@@ -326,7 +327,7 @@ public class HomeActivity extends ApplicationActivity {
 			AssetManager assetManager = getAssets();
 			InputStream in = assetManager.open("version");
 			String currentVersion = VersionUtils.getVersion(in);
-			onError("cur = " + currentVersion);
+			footer.setText("Current version: " + currentVersion);
 			
 			// New version detected!
 			if ( version.compareTo(currentVersion) > 0 ) {
