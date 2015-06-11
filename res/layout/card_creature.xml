@@ -2,21 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/card_background"
     android:orientation="vertical" >
 
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" >
 
-        <ImageView
-            android:id="@+id/cardLayoutImage"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/cardDetailImageHeight"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/image_border"
-            android:contentDescription="@string/not_initialized"
-            android:paddingRight="5dp"
-            android:src="@drawable/card_goblin_pirate_large" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/cardLayoutImage"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/cardDetailImageHeight"
+                android:contentDescription="@string/not_initialized"
+                android:src="@drawable/card_goblin_pirate_large" />
+
+            <TextView
+                android:id="@+id/cardName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/skill_background"
+                android:text="@string/not_initialized" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/cardDefensorImage"
@@ -54,16 +68,6 @@
             android:text="@string/not_initialized" />
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/cardName"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/skill_background"
-        android:gravity="center_horizontal"
-        android:text="@string/not_initialized" />
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -96,14 +100,14 @@
             android:text="@string/not_initialized"
             android:visibility="invisible" />
     </LinearLayout>
-    
+
     <TextView
-            android:id="@+id/cardSkills"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/not_initialized"
-            android:visibility="invisible" />
+        android:id="@+id/cardSkills"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/not_initialized"
+        android:visibility="invisible" />
 
     <com.guntzergames.medievalwipeout.layouts.ElementLayout
         android:id="@+id/numberOfCardsLayout"

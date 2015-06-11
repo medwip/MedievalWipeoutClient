@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import android.R.layout;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -103,6 +104,7 @@ public class GameActivity extends ApplicationActivity {
 	private TextView gameInfos, gameTrade, gameDefense, gameFaith, gameAlchemy, increaseDecreasePrimaryText, increaseDecreaseSecondaryText;
 
 	private Set<View> dragableRegisteredViews = new HashSet<View>();
+	private Set<View> targetableRegisteredViews = new HashSet<View>();
 
 	private Button nextPhaseButton;
 
@@ -455,16 +457,25 @@ public class GameActivity extends ApplicationActivity {
 		stopHightlightAnimation(playerChoiceCard1Layout);
 		stopHightlightAnimation(playerChoiceCard2Layout);
 		stopHightlightAnimation(playerHandLayout);
+		stopHightlightAnimation(gameResourcesLayout);
+		stopHightlightAnimation(playerChoicesLayout);
+		
+		for ( View view : targetableRegisteredViews ) {
+			stopTargetAnimation(view);
+			if ( view instanceof ViewGroup ) {
+				stopTargetAnimationLayout((ViewGroup)view);
+			}
+		}
+		
+		/*
 		stopTargetAnimationLayout(playerHandLayout);
 		stopTargetAnimationLayout(playerFieldDefenseLayout);
 		stopTargetAnimationLayout(playerFieldAttackLayout);
 		stopTargetAnimationLayout(opponentFieldDefenseLayout);
-		// TODO it's a test
 		stopTargetAnimationLayout(opponentFieldAttackLayout);
 		stopTargetAnimationLayout(playerChoicesLayout);
 		stopTargetAnimation(cardLayoutDetail);
-		stopHightlightAnimation(gameResourcesLayout);
-		stopHightlightAnimation(playerChoicesLayout);
+		*/
 
 		// stopTargetAnimation(playerFieldDefenseLayout);
 
@@ -542,6 +553,36 @@ public class GameActivity extends ApplicationActivity {
 		Log.i(TAG, "onPause");
 		gameCheckerThread.setPaused(true);
 
+	}
+	
+	private void registerTargetableViews(ViewGroup parent) {
+		
+        for (int i = parent.getChildCount() - 1; i >= 0; i--) {
+            final View child = parent.getChildAt(i);
+            if (child instanceof ViewGroup) {
+            	registerTargetableViews((ViewGroup) child);
+            	AnimationDrawable animationDrawable = getAnimationDrawable(child, 1);
+        		if (animationDrawable != null) {
+        			targetableRegisteredViews.add(child);
+        			Log.i(TAG, String.format("Added view %s in targetableRegisteredViews", child));
+        		}
+            } else {
+                if (child != null) {
+                	AnimationDrawable animationDrawable = getAnimationDrawable(child, 1);
+            		if (animationDrawable != null) {
+            			targetableRegisteredViews.add(child);
+            			Log.i(TAG, String.format("Added view %s in targetableRegisteredViews", child));
+            		}
+                }
+            }
+        }
+        
+    }
+	
+	private void registerTargetableViews() {
+		
+		registerTargetableViews(rootLayout);
+		
 	}
 
 	@Override
@@ -650,6 +691,8 @@ public class GameActivity extends ApplicationActivity {
 		registerDragListener(playerFieldAttackLayout);
 		registerDragListener(opponentFieldDefenseLayout);
 		registerDragListener(opponentFieldAttackLayout);
+		
+		registerTargetableViews();
 
 		playerChoiceCard1Layout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId("playerChoice", 0));
 		playerChoiceCard1Layout.setOnClickListener(playerResourceListener);
@@ -1029,7 +1072,7 @@ public class GameActivity extends ApplicationActivity {
 
 		}
 
-		gameInfos.setText(String.format("%s [%s / %s]", gameView.toString(), ++httpCallsDone, httpCallsAborted));
+		gameInfos.setText(String.format("%s [%s / %s], token=%s", gameView.toString(), ++httpCallsDone, httpCallsAborted, gameView.getToken().getUid()));
 		gameTrade.setText(String.format("%s", gameView.getTrade()));
 		gameDefense.setText(String.format("%s", gameView.getDefense()));
 		gameFaith.setText(String.format("%s", gameView.getFaith()));

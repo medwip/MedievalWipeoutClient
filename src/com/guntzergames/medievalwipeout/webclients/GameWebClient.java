@@ -51,11 +51,11 @@ public class GameWebClient {
 	}
 
 	public void getGame(long gameId) {
-		get("http://" + ip + ":8080/MedievalWipeout/rest/game/get/" + gameId + "/" + callbackable.getFacebookUserId(), ResponseType.GET_GAME);
+		get("http://" + ip + ":8080/MedievalWipeout/rest/game/get/" + gameId + "/" + callbackable.getFacebookUserId() + "/" + onGetGameWebAsyncResponse.getFullJson(), ResponseType.GET_GAME);
 	}
 
 	public void getGame(long gameId, final GameCheckerThread gameCheckerThread) {
-		get("http://" + ip + ":8080/MedievalWipeout/rest/game/get/" + gameId + "/" + gameCheckerThread.getFacebookUserId(), ResponseType.GET_GAME);
+		get("http://" + ip + ":8080/MedievalWipeout/rest/game/get/" + gameId + "/" + gameCheckerThread.getFacebookUserId() + "/" + onGetGameWebAsyncResponse.getFullJson(), ResponseType.GET_GAME);
 	}
 
 	public void getAccount() {
@@ -99,7 +99,7 @@ public class GameWebClient {
 	}
 
 	public void checkGame(long gameId) {
-		get("http://" + ip + ":8080/MedievalWipeout/rest/game/get/" + gameId + "/" + callbackable.getFacebookUserId(), ResponseType.CHECK_GAME);
+		get("http://" + ip + ":8080/MedievalWipeout/rest/game/get/" + gameId + "/" + callbackable.getFacebookUserId() + "/" + onGetGameWebAsyncResponse.getFullJson(), ResponseType.CHECK_GAME);
 	}
 	
 	public void getVersion() {

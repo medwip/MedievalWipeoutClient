@@ -15,10 +15,11 @@
     <dimen name="cardElementHeight">20dp</dimen>
     <dimen name="cardWidth">60dp</dimen>
     <dimen name="cardHeight">80dp</dimen>
-    <dimen name="cardDetailWidth">80dp</dimen>
+    <dimen name="cardDetailWidth">120dp</dimen>
     <dimen name="cardDetailHeight">160dp</dimen>
     <dimen name="cardImageWidth">40dp</dimen>
-    <dimen name="cardDetailImageHeight">80dp</dimen>
+    <dimen name="cardDetailImageHeight">50dp</dimen>
+    <dimen name="cardDetailFrameHeight">120dp</dimen>
     <dimen name="cardModelImageWidth">50dp</dimen>
     <dimen name="cardModelNameWidth">50dp</dimen>
     <dimen name="cardModelListWidth">120dp</dimen>

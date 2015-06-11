@@ -1,5 +1,10 @@
 package com.guntzergames.medievalwipeout.webclients;
 
+import java.util.LinkedList;
+
+import name.fraser.neil.plaintext.diff_match_patch;
+import name.fraser.neil.plaintext.diff_match_patch.Patch;
+
 import org.apache.http.Header;
 
 import android.util.Log;
@@ -18,6 +23,8 @@ public class OnGetGameWebAsyncResponse extends AsyncHttpResponseHandler {
 
 	private GameWebClientCallbackable callbackable;
 	private ResponseType responseType;
+
+	private String previousJsonResponse;
 
 	public enum ResponseType {
 
@@ -59,6 +66,10 @@ public class OnGetGameWebAsyncResponse extends AsyncHttpResponseHandler {
 	public void setResponseType(ResponseType responseType) {
 		this.responseType = responseType;
 	}
+	
+	public boolean getFullJson() {
+		return (previousJsonResponse == null ? true : false);
+	}
 
 	@Override
 	public void onStart() {
@@ -85,7 +96,62 @@ public class OnGetGameWebAsyncResponse extends AsyncHttpResponseHandler {
 					callbackable.onGetAccount(Account.fromJson(response));
 					break;
 				case GET_GAME:
-					callbackable.onGetGame(GameView.fromJson(response));
+				case CHECK_GAME:
+					
+					String json = null;
+					boolean reload = true;
+					
+					if (previousJsonResponse != null) {
+
+						Log.i(TAG, "Previous response not null");
+						if (response.equals("")) {
+							Log.i(TAG, "Response blank");
+							json = previousJsonResponse;
+							reload = false;
+						} else {
+							
+							Log.i(TAG, "Response not blank");
+							json = response;
+							
+							/*
+							try {
+								diff_match_patch dmp = new diff_match_patch();
+								LinkedList<Patch> patches = new LinkedList<Patch>(dmp.patch_fromText(response));
+								Log.i(TAG, String.format("Previous JSON=%s", previousJsonResponse));
+								Log.i(TAG, String.format("Patch len=%s", patches.get(0).diffs));
+								Log.i(TAG, String.format("Patch has been found: %s, len=%s", response, patches.size()));
+								Object[] results = dmp.patch_apply(patches, previousJsonResponse);
+								Log.i(TAG, String.format("Results len=%s, second arg=%s", results.length, ((boolean[]) (results[1]))[0]));
+								json = (String) (results[0]);
+								if (json.equals("")) {
+									json = previousJsonResponse;
+								}
+								Log.i(TAG, String.format("Results =%s", results[0]));
+							} catch (Exception e) {
+								Log.e(TAG, "Error in using patch", e);
+								json = response;
+							}
+							*/
+						}
+
+					} else {
+						Log.i(TAG, "Previous response is null");
+						json = response;
+					}
+//					Log.i(TAG, "JSON: " + json);
+					GameView gameView = GameView.fromJson(json);
+					previousJsonResponse = json;
+					
+					if ( reload ) {
+						
+						if (responseType == ResponseType.CHECK_GAME) {
+							callbackable.onCheckGame(gameView);
+						} else {
+							callbackable.onGetGame(gameView);
+						}
+						
+					}
+					
 					break;
 				case NEXT_PHASE:
 					callbackable.onGetGame(GameView.fromJson(response));
@@ -95,9 +161,6 @@ public class OnGetGameWebAsyncResponse extends AsyncHttpResponseHandler {
 					break;
 				case DELETE_GAME:
 					callbackable.onDeleteGame();
-					break;
-				case CHECK_GAME:
-					callbackable.onCheckGame(GameView.fromJson(response));
 					break;
 				case GET_CARD_MODELS:
 					callbackable.onGetCardModels(CardModelList.fromJson(response).getCardModels());
@@ -120,7 +183,7 @@ public class OnGetGameWebAsyncResponse extends AsyncHttpResponseHandler {
 
 			callbackable.onError(String.format("Error occured for event %s: %s", responseType, e.getMessage()));
 			Log.e(TAG, e.getMessage(), e);
-			
+
 		}
 
 	}

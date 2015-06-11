@@ -463,10 +463,10 @@ public class CardLayout extends RelativeLayout {
 			rootView = (LinearLayout)layoutInflater.inflate(R.layout.card_creature, null);
 			
 			reset();
-			image = (ImageView)rootView.findViewById(R.id.cardLayoutImage);
 			name = (TextView)rootView.findViewById(R.id.cardName);
 			attack = (TextView)rootView.findViewById(R.id.cardAttackText);
 			lifePoints = (TextView)rootView.findViewById(R.id.cardLifePointsText);
+			image = (ImageView)rootView.findViewById(R.id.cardLayoutImage);
 			gold = (TextView)rootView.findViewById(R.id.cardGold);
 			faith = (TextView)rootView.findViewById(R.id.cardFaith);
 			alchemy = (TextView)rootView.findViewById(R.id.cardAlchemy);
