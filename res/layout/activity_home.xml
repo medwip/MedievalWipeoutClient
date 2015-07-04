@@ -82,12 +82,25 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
         android:id="@+id/footer"
+        style="@style/Footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        style="@style/Footer"
-        android:text="@string/not_initialized" />
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/currentVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/not_initialized" />
+
+        <TextView
+            android:id="@+id/latestVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/not_initialized" />
+    </LinearLayout>
 
 </LinearLayout>

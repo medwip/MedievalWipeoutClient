@@ -1,19 +1,17 @@
 package com.guntzergames.medievalwipeout.webclients;
 
-import java.util.LinkedList;
-
-import name.fraser.neil.plaintext.diff_match_patch;
-import name.fraser.neil.plaintext.diff_match_patch.Patch;
-
 import org.apache.http.Header;
 
 import android.util.Log;
 
 import com.guntzergames.medievalwipeout.beans.Account;
 import com.guntzergames.medievalwipeout.beans.CardModelList;
+import com.guntzergames.medievalwipeout.beans.DiffResult;
 import com.guntzergames.medievalwipeout.beans.GameViewList;
 import com.guntzergames.medievalwipeout.beans.Packet;
+import com.guntzergames.medievalwipeout.exceptions.JsonException;
 import com.guntzergames.medievalwipeout.interfaces.GameWebClientCallbackable;
+import com.guntzergames.medievalwipeout.utils.DiffUtils;
 import com.guntzergames.medievalwipeout.views.GameView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -105,33 +103,22 @@ public class OnGetGameWebAsyncResponse extends AsyncHttpResponseHandler {
 
 						Log.i(TAG, "Previous response not null");
 						if (response.equals("")) {
-							Log.i(TAG, "Response blank");
 							json = previousJsonResponse;
+							Log.i(TAG, String.format("Response blank, json=%s", json.substring(0, 1000)));
 							reload = false;
 						} else {
 							
-							Log.i(TAG, "Response not blank");
-							json = response;
+							Log.i(TAG, String.format("Response not blank: %s", response.substring(0, 1000)));
 							
-							/*
 							try {
-								diff_match_patch dmp = new diff_match_patch();
-								LinkedList<Patch> patches = new LinkedList<Patch>(dmp.patch_fromText(response));
-								Log.i(TAG, String.format("Previous JSON=%s", previousJsonResponse));
-								Log.i(TAG, String.format("Patch len=%s", patches.get(0).diffs));
-								Log.i(TAG, String.format("Patch has been found: %s, len=%s", response, patches.size()));
-								Object[] results = dmp.patch_apply(patches, previousJsonResponse);
-								Log.i(TAG, String.format("Results len=%s, second arg=%s", results.length, ((boolean[]) (results[1]))[0]));
-								json = (String) (results[0]);
-								if (json.equals("")) {
-									json = previousJsonResponse;
-								}
-								Log.i(TAG, String.format("Results =%s", results[0]));
-							} catch (Exception e) {
-								Log.e(TAG, "Error in using patch", e);
+								DiffResult diff = DiffResult.fromJson(response);
+								json = DiffUtils.patch(previousJsonResponse, diff);
+								Log.i(TAG, "After patch, JSON: " + json.substring(0, 1000));
+							}
+							catch ( JsonException e ) {
 								json = response;
 							}
-							*/
+							
 						}
 
 					} else {

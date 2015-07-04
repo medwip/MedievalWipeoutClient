@@ -105,6 +105,7 @@ public class GameActivity extends ApplicationActivity {
 
 	private Set<View> dragableRegisteredViews = new HashSet<View>();
 	private Set<View> targetableRegisteredViews = new HashSet<View>();
+	private Set<View> highlightableRegisteredViews = new HashSet<View>();
 
 	private Button nextPhaseButton;
 
@@ -294,7 +295,7 @@ public class GameActivity extends ApplicationActivity {
 		}
 
 	}
-
+	
 	private void setupField(AbstractCardList<?> cardList, String layoutPrefix, int numElem, CardLocation cardLocation) {
 
 		int num = cardList.getCards().size();
@@ -454,31 +455,16 @@ public class GameActivity extends ApplicationActivity {
 		playerChoiceCard2Layout.hide();
 		playerChoicesLayout.setVisibility(View.INVISIBLE);
 
-		stopHightlightAnimation(playerChoiceCard1Layout);
-		stopHightlightAnimation(playerChoiceCard2Layout);
-		stopHightlightAnimation(playerHandLayout);
-		stopHightlightAnimation(gameResourcesLayout);
-		stopHightlightAnimation(playerChoicesLayout);
-		
 		for ( View view : targetableRegisteredViews ) {
 			stopTargetAnimation(view);
 			if ( view instanceof ViewGroup ) {
 				stopTargetAnimationLayout((ViewGroup)view);
 			}
 		}
+		for ( View view : highlightableRegisteredViews ) {
+			stopHightlightAnimation(view);
+		}
 		
-		/*
-		stopTargetAnimationLayout(playerHandLayout);
-		stopTargetAnimationLayout(playerFieldDefenseLayout);
-		stopTargetAnimationLayout(playerFieldAttackLayout);
-		stopTargetAnimationLayout(opponentFieldDefenseLayout);
-		stopTargetAnimationLayout(opponentFieldAttackLayout);
-		stopTargetAnimationLayout(playerChoicesLayout);
-		stopTargetAnimation(cardLayoutDetail);
-		*/
-
-		// stopTargetAnimation(playerFieldDefenseLayout);
-
 		Phase phase = gameView.getPhase();
 
 		switch (phase) {
@@ -555,32 +541,45 @@ public class GameActivity extends ApplicationActivity {
 
 	}
 	
-	private void registerTargetableViews(ViewGroup parent) {
+	private void registerAnimatedViews(ViewGroup parent, int index, Set<View> registeredViews) {
 		
-        for (int i = parent.getChildCount() - 1; i >= 0; i--) {
+		for (int i = parent.getChildCount() - 1; i >= 0; i--) {
             final View child = parent.getChildAt(i);
             if (child instanceof ViewGroup) {
             	registerTargetableViews((ViewGroup) child);
-            	AnimationDrawable animationDrawable = getAnimationDrawable(child, 1);
+            	AnimationDrawable animationDrawable = getAnimationDrawable(child, index);
         		if (animationDrawable != null) {
-        			targetableRegisteredViews.add(child);
+        			registeredViews.add(child);
         			Log.i(TAG, String.format("Added view %s in targetableRegisteredViews", child));
         		}
             } else {
                 if (child != null) {
-                	AnimationDrawable animationDrawable = getAnimationDrawable(child, 1);
+                	AnimationDrawable animationDrawable = getAnimationDrawable(child, index);
             		if (animationDrawable != null) {
-            			targetableRegisteredViews.add(child);
+            			registeredViews.add(child);
             			Log.i(TAG, String.format("Added view %s in targetableRegisteredViews", child));
             		}
                 }
             }
         }
+		
+	}
+	
+	private void registerTargetableViews(ViewGroup parent) {
+		
+        registerAnimatedViews(parent, 1, targetableRegisteredViews);
         
     }
 	
-	private void registerTargetableViews() {
+	private void registerHighligthableViews(ViewGroup parent) {
 		
+        registerAnimatedViews(parent, 0, highlightableRegisteredViews);
+        
+    }
+	
+	private void registerViews() {
+		
+		registerHighligthableViews(rootLayout);
 		registerTargetableViews(rootLayout);
 		
 	}
@@ -692,7 +691,7 @@ public class GameActivity extends ApplicationActivity {
 		registerDragListener(opponentFieldDefenseLayout);
 		registerDragListener(opponentFieldAttackLayout);
 		
-		registerTargetableViews();
+		registerViews();
 
 		playerChoiceCard1Layout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId("playerChoice", 0));
 		playerChoiceCard1Layout.setOnClickListener(playerResourceListener);
@@ -903,6 +902,45 @@ public class GameActivity extends ApplicationActivity {
 							animateIncreaseDecreaseEvent(gameEventIncreaseDecrease, playerLayout.getPlayerLifePointsLayout(), increaseDecreaseSecondaryText,
 									increaseDecreaseSecondaryAnimationSet);
 							break;
+							
+						case PLAYER_CARD_LIFE_POINTS:
+							String layoutPrefix = "";
+							PlayerDeckCard playerDeckCard = gameEventIncreaseDecrease.getCard();
+							
+							if ( playerDeckCard instanceof PlayerHandCard ) {
+								if ( gameEventIncreaseDecrease.getPlayerType() == PlayerType.PLAYER ) {
+									layoutPrefix = "playerHand";
+								}
+								else {
+									layoutPrefix = "opponentHand";
+								}
+							}
+							if ( playerDeckCard instanceof PlayerFieldCard ) {
+								PlayerFieldCard playerFieldCard = (PlayerFieldCard)playerDeckCard;
+								if ( playerFieldCard.getLocation() == Location.ATTACK ) {
+									if ( gameEventIncreaseDecrease.getPlayerType() == PlayerType.PLAYER ) {
+										layoutPrefix = "playerFieldAttack";
+									}
+									else {
+										layoutPrefix = "opponentFieldAttack";
+									}
+								}
+								else {
+									if ( gameEventIncreaseDecrease.getPlayerType() == PlayerType.PLAYER ) {
+										layoutPrefix = "playerFieldDefense";
+									}
+									else {
+										layoutPrefix = "opponentFieldDefense";
+									}
+								}
+							}
+							
+							CardLayout cardLayout = (CardLayout) rootLayout.findViewById(CardLayout.getCardFromId(layoutPrefix, gameEventIncreaseDecrease.getIndex()));
+							animateIncreaseDecreaseEvent(gameEventIncreaseDecrease,
+									cardLayout,
+									increaseDecreasePrimaryText,
+									increaseDecreasePrimaryAnimationSet);
+							break;
 
 						default:
 							break;
@@ -1072,7 +1110,9 @@ public class GameActivity extends ApplicationActivity {
 
 		}
 
-		gameInfos.setText(String.format("%s [%s / %s], token=%s", gameView.toString(), ++httpCallsDone, httpCallsAborted, gameView.getToken().getUid()));
+		gameInfos.setText(String.format("%s [%s / %s], token=%s",
+				gameView.toString(), ++httpCallsDone, httpCallsAborted,
+				gameView.getToken() != null ? gameView.getToken().getUid() : "N/A"));
 		gameTrade.setText(String.format("%s", gameView.getTrade()));
 		gameDefense.setText(String.format("%s", gameView.getDefense()));
 		gameFaith.setText(String.format("%s", gameView.getFaith()));

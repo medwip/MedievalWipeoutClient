@@ -1,7 +1,8 @@
 package com.guntzergames.medievalwipeout.listeners;
 
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 import android.util.Log;
 import android.view.DragEvent;
@@ -24,7 +25,7 @@ public class GameDragListener implements OnDragListener {
 
 	private GameActivity gameActivity;
 
-	private Set<View> targetViews = new HashSet<View>();
+	private Map<Integer, View> targetViews = new HashMap<Integer, View>();
 
 	public GameDragListener(GameActivity gameActivity) {
 		this.gameActivity = gameActivity;
@@ -110,7 +111,7 @@ public class GameDragListener implements OnDragListener {
 
 		for (View view : gameActivity.getDragableRegisteredViews()) {
 			if (getPossibleTarget(cardLayout, view) != null) {
-				targetViews.add(view);
+				targetViews.put(view.getId(), view);
 				boolean animated = gameActivity.startTargetAnimation(view);
 				Log.i(TAG, String.format("target view: %s animated %s", view, animated));
 			}
@@ -122,7 +123,7 @@ public class GameDragListener implements OnDragListener {
 
 	private void unloadTargetViews(CardLayout cardLayout) {
 
-		for (View view : targetViews) {
+		for (View view : targetViews.values()) {
 			gameActivity.stopTargetAnimation(view);
 		}
 		
@@ -148,7 +149,8 @@ public class GameDragListener implements OnDragListener {
 			case DragEvent.ACTION_DRAG_ENTERED:
 
 				Log.i(TAG, String.format("ACTION_DRAG_ENTERED, dest = %s", dest));
-				if (getPossibleTarget(cardLayout, dest) != null) {
+//				if (getPossibleTarget(cardLayout, dest) != null) {
+				if ( targetViews.containsKey(dest.getId()) ) {
 					gameActivity.startHighlightAnimation(dest);
 					return true;
 				}
@@ -157,7 +159,7 @@ public class GameDragListener implements OnDragListener {
 			case DragEvent.ACTION_DRAG_EXITED:
 
 				Log.i(TAG, String.format("ACTION_DRAG_EXITED, dest = %s", dest));
-				if (getPossibleTarget(cardLayout, dest) != null) {
+				if ( targetViews.containsKey(dest.getId()) ) {
 					gameActivity.stopHightlightAnimation(dest);
 					return true;
 				}
@@ -195,7 +197,7 @@ public class GameDragListener implements OnDragListener {
 			default:
 
 				Log.d(TAG, String.format("Default (not handled action event), dest = %s", dest));
-				if (getPossibleTarget(cardLayout, dest) != null) {
+				if ( targetViews.containsKey(dest.getId()) ) {
 					return true;
 				}
 				return false;

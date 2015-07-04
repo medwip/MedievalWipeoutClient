@@ -22,7 +22,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/cardDetailImageHeight"
                 android:contentDescription="@string/not_initialized"
-                android:background="@drawable/image_card_border"
                 android:layout_marginTop="10dp"
                 android:src="@drawable/card_goblin_pirate_large" />
 
@@ -67,7 +66,6 @@
             android:layout_height="@dimen/smallIconWidth"
             android:layout_gravity="bottom|right"
             android:background="@drawable/life"
-            android:textSize="10sp"
             android:text="@string/not_initialized" />
     </FrameLayout>
 

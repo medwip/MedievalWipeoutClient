@@ -46,7 +46,7 @@ public class HomeActivity extends ApplicationActivity {
 	private long gameId, selectedDeckTemplateId;
 	private GraphUser user = null;
 	private Button createGameButton, editDeckButton;
-	private TextView debugTextView, footer;
+	private TextView debugTextView, currentVersionView, latestVersionView;
 	private ProgressBar loader;
 	private int gameCheckAttempts;
 	private HomeCheckerThread gameCheckerThread = null;
@@ -87,7 +87,8 @@ public class HomeActivity extends ApplicationActivity {
 
 		editDeckButton = (Button) layout.findViewById(R.id.editDeck);
 		debugTextView = (TextView) layout.findViewById(R.id.debug);
-		footer = (TextView) layout.findViewById(R.id.footer);
+		currentVersionView = (TextView) layout.findViewById(R.id.currentVersion);
+		latestVersionView = (TextView) layout.findViewById(R.id.latestVersion);
 		loader = (ProgressBar) layout.findViewById(R.id.progressBar);
 		deckTemplateListView = (ListView) layout.findViewById(R.id.deckTemplatesList);
 		gameListView = (ListView) layout.findViewById(R.id.gamesList);
@@ -321,19 +322,21 @@ public class HomeActivity extends ApplicationActivity {
 
 	@Override
 	public void onGetVersion(String version) {
-		onError(version);
 		
 		try {
 			AssetManager assetManager = getAssets();
 			InputStream in = assetManager.open("version");
 			String currentVersion = VersionUtils.getVersion(in);
-			footer.setText("Current version: " + currentVersion);
+			currentVersionView.setText("Current version: " + currentVersion);
 			
 			// New version detected!
 			if ( version.compareTo(currentVersion) > 0 ) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://guntzergames.ddns.net:8080/MedievalWipeout/rest/client/package"));
-				onError("Installing new version");
+				latestVersionView.setText(String.format("[Installing new version %s]", version));
 				startActivity(intent);
+			}
+			else {
+				latestVersionView.setText(String.format("[No new version available]"));
 			}
 			
 		}

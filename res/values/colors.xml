@@ -32,5 +32,6 @@
     <color name="cardBorderBackground">#22000000</color>
     <color name="card_border_active_stroke">#5561210B</color>
     <color name="cardBorderStroke">#22CB8152</color>
+    <color name="cardImageBorderStroke">#55000000</color>
     
 </resources>

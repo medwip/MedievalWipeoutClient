@@ -460,7 +460,13 @@ public class CardLayout extends RelativeLayout {
 			alchemy = (TextView)rootView.findViewById(R.id.cardResourceAlchemy);
 		}
 		else {
-			rootView = (LinearLayout)layoutInflater.inflate(R.layout.card_creature, null);
+			
+			if ( detailShown ) {
+				rootView = (LinearLayout)layoutInflater.inflate(R.layout.card_creature_detail, null);
+			}
+			else {
+				rootView = (LinearLayout)layoutInflater.inflate(R.layout.card_creature, null);
+			}
 			
 			reset();
 			name = (TextView)rootView.findViewById(R.id.cardName);
